@@ -12,9 +12,9 @@ body {
 }
 
 .contact-btn .btn {
+  background-color: rgba(0, 0, 0, 0);
   font-size: 2em;
   color: #337ab7;
-  background-color: rgba(0, 0, 0, 0);
   border: none;
 }
 
@@ -25,7 +25,6 @@ body {
   background-size: 100% auto, 100% auto !important;
   background-attachment: fixed;
   padding-top: 2em;
-  height: 70em;
 }
 
 .page-one h1 {
@@ -36,7 +35,6 @@ body {
 .page-two {
   background: url("https://fortunedotcom.files.wordpress.com/2016/05/img_0465.jpg");
   background-size: cover;
-  height: 70em;
 }
 
 .text-box {

@@ -1,10 +1,10 @@
 
 
 <!--
-Copyright (c) 2017 by Emil (http://codepen.io/RandomNoob724/pen/dzXBBv)
+Copyright (c) 2017 by Emil (https://codepen.io/RandomNoob724/pen/aywrVo)
 
 
-Fork of an original work by Emil (http://codepen.io/RandomNoob724/pen/ayZgZr)
+Fork of an original work by Emil (https://codepen.io/RandomNoob724/pen/ayZgZr)
 
 
 

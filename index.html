@@ -1,91 +1,76 @@
 <!DOCTYPE html>
-<html >
+<html class="container-fluid">
+
 <head>
-  <meta charset="UTF-8">
-  <title>Kind of working responsive navbar</title>
-  
-  
-  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
-
-      <link rel="stylesheet" href="css/style.css">
-
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <title>Kind of working responsive design</title>
+    <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-  <html>
+    <nav class="navbar-fixed-top">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myNavBar" aria-expanded="false">
+                    <span class="sr-only">Toggle Navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+        </div>
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.googleapis.com/css?family=Lobster" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
-</head>
+        <div class="collapse navbar-collapse" id="myNavBar">
+            <ul class="nav navbar-nav nav-pills">
+                <li><a href="#">Emil Persson</a></li>
+                <li id="about-me-button"><a href="#aboutme">About Me</a></li>
+                <li><a href="#contact">Contact Me</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+            </ul>
+        </div>
+    </nav>
 
-<body>
-  <nav class="navbar-fixed-top">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#myNavBar" aria-expanded="false">
-        <span class="sr-only">Toggle Navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      </div>
-    
-      <div class="collapse navbar-collapse" id="myNavBar">
-        <ul class="nav navbar-nav nav-pills">
-          <li><a href="#">Emil Persson</a></li>
-          <li id="about-me-button"><a href="#aboutme">About Me</a></li>
-          <li><a href="#contact">Contact Me</a></li>
-          <li><a href="#portfolio">Portfolio</a></li>
-        </ul>
-      </div>
-      </div>
-  </nav>
-
-  <div class="page-one text-center">
-    <div class="block">
-      <h1>Emil <br>Persson</h1>
-      <h5>AKA <br>RandomNoob724</h5>
-      <h2>you can do anything, just put in the work</h2>
-      <hr style="align: center; width: 40%;">
-      <h3>Social Media</h3>
-      <div class="btnList contact-btn">
-        <a class="btn btn-default" href="https://twitter.com/RandomNoob724" target="_blank">Twitter</a>
-        <a class="btn btn-default" href="https://www.facebook.com/emil.persson.906" target="_blank">Facebook</a>
-        <a class="btn btn-default" href="https://www.instagram.com/randomnoob724/">Instagram</a>
-      </div>
+    <div class="page-one text-center row">
+        <div class="block">
+            <h1>Emil <br>Persson</h1>
+            <h5>AKA <br>RandomNoob724</h5>
+            <h2>you can do anything, just put in the work</h2>
+            <hr style="align: center; width: 40%;">
+            <h3>Social Media</h3>
+            <div class="btnList contact-btn">
+                <a class="btn btn-default" href="https://twitter.com/RandomNoob724" target="_blank">Twitter</a>
+                <a class="btn btn-default" href="https://www.facebook.com/emil.persson.906" target="_blank">Facebook</a>
+                <a class="btn btn-default" href="https://www.instagram.com/randomnoob724/">Instagram</a>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="page-two" id="aboutme">
-    <div class="row">
-      <div class="col-md-6 text-box">
-        <h1>Emil Persson</h1>
-        <p>My name is Emil Persson i come from Karlstad, Sweden where i am studying tech at Klaragymnasium, and i am a newbie developer that loves to work and loves to learn. I am currently learning web development and more high level languages like C# and
-          Java. I mostly work in C# to learn programming to make games in Unity3D.
+    <div class="page-two row" id="aboutme">
+        <div class="col-md-6 text-box">
+            <h1>Emil Persson</h1>
+            <p>My name is Emil Persson i come from Karlstad, Sweden where i am studying tech at Klaragymnasium, and i am a newbie developer that loves to work and loves to learn. I am currently learning web development and more high level languages like C# and Java. I mostly work in C# to learn programming to make games in Unity3D.
 
-          <br><br>Languages i use: HTML, CSS, JavaScript, JQuery and C#.
-        </p>
-      </div>
-      <div class="col-md-4">
-        <img src="https://pbs.twimg.com/profile_images/715579859356033024/RNAO5hoE_400x400.jpg" class="displayed img-responsive center-block">
-      </div>
-      <div class="col-md-6 text-box" id="portfolio">
-        <h1>Portfolio</h1>
-        <p>If you want to check out some projects i have worked on you can check out my <a href="https://github.com/RandomNoob724" target="_blank">GitHub</a> and my <a href="https://codepen.io/RandomNoob724/" target="_blank"> CodePen</a></p>
-      </div>
-      <div class="col-md-4 text-box" id="contact">
-        <h1>Contact Me</h1>
-        <p>If you want to Contact me you can send me an email at emilper1999@gmail.com or contact me at any of my social media linked in the beginning of the page</p>
-      </div>
+                <br><br>Languages i use: HTML, CSS, JavaScript, JQuery and C#.
+            </p>
+        </div>
+        <div class="col-md-4">
+            <img src="https://pbs.twimg.com/profile_images/898217152032985095/Q3ELLHMn_400x400.jpg" class="displayed img-responsive center-block">
+        </div>
+        <div class="col-md-6 text-box" id="portfolio">
+            <h1>Portfolio</h1>
+            <p>If you want to check out some projects i have worked on you can check out my <a href="https://github.com/RandomNoob724" target="_blank">GitHub</a> and my <a href="https://codepen.io/RandomNoob724/" target="_blank"> CodePen</a></p>
+        </div>
+        <div class="col-md-4 text-box" id="contact">
+            <h1>Contact Me</h1>
+            <p>If you want to Contact me you can send me an email at emilper1999@gmail.com or contact me at any of my social media linked in the beginning of the page</p>
+        </div>
     </div>
-  </div>
-
-  <footer class="text-center">Made by Emil Persson</footer>
+    <footer class="text-center row">Made by Emil Persson</footer>
 </body>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
-      <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script src="js/index.js"></script>
 </html>

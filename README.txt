@@ -1,3 +1,1 @@
-A simple website i made because i was bored
-
-
+Webapplication made for a course i am currently taking

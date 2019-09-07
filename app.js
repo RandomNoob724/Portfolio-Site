@@ -28,6 +28,10 @@ app.get('/blog', function(request, response){
   response.render("blog.hbs", model)
 })
 
+app.get('/contact', function(request, response){
+  response.render('contact.hbs')
+})
+
 app.listen(8080, () =>{
   console.log("server is starting on port", 8080)
 })

@@ -1,3 +1,5 @@
+let date = new Date();
+
 exports.humans = [{
     id: 0,
     name: "Alice"
@@ -15,12 +17,19 @@ exports.humans = [{
     name: "Catty"
   }]
 
-  exports.something = [{
+  exports.blogPost = [{
     postID: 0,
     postHeader: "Welcome",
-    postText: "sklfjlksjdfkkdfljldfjölkajklsdfjlkjfj"
+    postText: "sklfjlksjdfkkdfljldfjölkajklsdfjlkjfj",
+    postDate: date.toDateString()
   }, {
     postID: 1,
     postHeader: "SecondPost",
-    postText: "fjsjdlflkadjfkljsljflkjsaöklfjklsadfklslödfj"
+    postText: "fjsjdlflkadjfkljsljflkjsaöklfjklsadfklslödfj",
+    postDate: date.toDateString()
+  }, {
+    postID: 2,
+    postHeader: "Fuck u",
+    postText: "sjdfölsdklfjoiuioewgoiewigjioewjiogweghowehgwegh",
+    postDate: date.toDateString()
   }]

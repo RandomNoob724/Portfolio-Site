@@ -18,10 +18,16 @@ app.get('/portfolio', function(request, response){
 })
 
 app.get('/about', function(request, response){
-  const model = {
-    something: dummyData.something
-  }
-  response.render("about.hbs", model)
+  response.render("about.hbs")
 })
 
-app.listen(8080)
+app.get('/blog', function(request, response){
+  const model = {
+    blogPost: dummyData.blogPost
+  }
+  response.render("blog.hbs", model)
+})
+
+app.listen(8080, () =>{
+  console.log("server is starting on port", 8080)
+})

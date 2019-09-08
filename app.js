@@ -32,6 +32,11 @@ app.get('/contact', function(request, response){
   response.render('contact.hbs')
 })
 
+
+
 app.listen(8080, () =>{
   console.log("server is starting on port", 8080)
+})
+app.use(function (req, res, next) {
+  res.status(404).send("Sorry can't find that!")
 })

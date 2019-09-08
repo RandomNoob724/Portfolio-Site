@@ -32,4 +32,9 @@ exports.humans = [{
     postHeader: "Fuck u",
     postText: "sjdfölsdklfjoiuioewgoiewigjioewjiogweghowehgwegh",
     postDate: date.toDateString()
+  }, {
+    postID: 3,
+    postHeader: "This is just a placeholderpost",
+    postText: "ljflasdjflkdsjföohgojljgldfgöjdfslgjlkdsjljfödsljflöksdajlfjasdojfiodsjfiodsajfopjioewfjfopwjefiopwjepojewpoifj",
+    postDate: date.toDateString()
   }]

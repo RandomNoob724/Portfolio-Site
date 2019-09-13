@@ -38,4 +38,4 @@ exports.humans = [{
     name: "emilpersson.com",
     description: "This website",
     link: "https://github.com/RandomNoob724/RandomNoob724"
-  }]
+}]

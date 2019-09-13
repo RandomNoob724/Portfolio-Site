@@ -51,3 +51,4 @@ app.listen(8080, () =>{
 
 app.use(function(request, response, next){
   response.status(404).send("Error 404. Sorry can't find that!")
+})

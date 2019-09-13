@@ -33,3 +33,9 @@ exports.humans = [{
     postText: "sjdfölsdklfjoiuioewgoiewigjioewjiogweghowehgwegh",
     postDate: date.toDateString()
   }]
+
+  exports.projects = [{
+    name: "emilpersson.com",
+    description: "This website",
+    link: "https://github.com/RandomNoob724/RandomNoob724"
+  }]

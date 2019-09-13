@@ -41,6 +41,10 @@ app.get('/admin', function(request, response){
   response.render('admin.hbs')
 })
 
+app.get('/login', function(request, response){
+  response.render('login.hbs')
+})
+
 app.listen(8080, () =>{
   console.log("server is starting on port", 8080)
 })

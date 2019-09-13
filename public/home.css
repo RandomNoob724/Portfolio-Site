@@ -1,6 +1,5 @@
-#main-header{
-    width: 100%;
+#main-header {
     background-image: url('/page-one-background.jpg');
-    text-align: center;
-    padding: 10em 0 625px 0;
+    color: white;
+    padding: 10em 0 30em 0;
 }

@@ -4,22 +4,28 @@
         <div class="col-md-12 align-items-md-center">
             <h1 class="my-4 text-center">Blog Posts</h1>
             <!-- Blog Post -->
-            <!-- For each blog post that is in the data file it will generate a blog post -->
-            {{#if blogPost.length}}
-            {{#each blogPost}}
-            <div class="my-4 card">
-                <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
-                <div class="card-body">
-                    <h2 class="card-title text-center">{{postHeader}}</h2>
-                    <p class="card-text">{{postText}}</p>
-                    <a href="#" class="btn btn-primary">Read More →</a>
-                </div>
-                <div class="card-footer text-muted">
-                Posted on {{postDate}} by
-                <a href="#">Start Bootstrap</a>
-                </div>
-            </div>
-            {{/each}}
+            {{#if somethingWentWrong}}
+                <h1>Internal server error...</h1>
+            {{else}}
+                <!-- For each blog post that is in the data file it will generate a blog post -->
+                {{#if blogpost.length}}
+                    {{#each blogpost}}
+                        <div class="my-4 card">
+                            <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+                            <div class="card-body">
+                                <h2 class="card-title text-center">{{blogpostHeader}}</h2>
+                                <p class="card-text">{{blogpostText}}</p>
+                                <a href="#" class="btn btn-primary">Read More →</a>
+                            </div>
+                            <div class="card-footer text-muted">
+                            Posted on {{blogpostDate}} by
+                            <a href="#">Start Bootstrap</a>
+                            </div>
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <h3>There are no blogposts currently</h3>
+                {{/if}}
             {{/if}}
         </div>
     </div>

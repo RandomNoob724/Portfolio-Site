@@ -1,7 +1,7 @@
-const dummyData = require('./dummy-data')
-
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
+
+const db = require('./db')
 
 const app = express()
 
@@ -26,11 +26,21 @@ app.get('/about', function(request, response){
   response.render("about.hbs")
 })
 
-app.get('/blog', function(request, response){
-  const model = {
-    blogPost: dummyData.blogPost
-  }
-  response.render("blog.hbs", model)
+app.get("/blog", function(request, response){
+  db.getAllBlogPosts(function(error, blogpost){
+    if(error){
+      const model = {
+        somethingWentWrong: true
+      }
+      response.render("blog.hbs", model)
+    }else{
+      const model = {
+        somethingWentWrong: false,
+        blogpost
+      }
+      response.render("blog.hbs", model)
+    }
+  })
 })
 
 app.get('/contact', function(request, response){
@@ -43,6 +53,10 @@ app.get('/admin', function(request, response){
 
 app.get('/login', function(request, response){
   response.render('login.hbs')
+})
+
+app.get('/create-post', function(request, response){
+  response.render('create-post.hbs')
 })
 
 app.listen(8080, () =>{

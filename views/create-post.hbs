@@ -1,0 +1,30 @@
+<head>
+    <title>Create new post</title>
+    <link rel="stylesheet" href="create-post.css">
+</head>
+
+<main>
+    <form class="form-createpost form" method="POST">
+        <h1 class="text-center">Create blog-post</h1>
+        <div class="text-center mb-4">
+            <h1 class="h3 mb-3 font-weight-normal">Write new post</h1>
+            {{#if validationErrors.length}}
+                <p>Errors:</p>
+                <ul>
+                    {{#each validationErrors}}
+                        <li>{{this}}</li>
+                    {{/each}}
+                </ul>
+            {{/if}}
+        </div>
+
+        <div class="form-label-group">
+            <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}">
+        </div>
+
+        <div class="form-label-group">
+            <input name="blogpostText" type="text" id="blogpostText" class="form-control" placeholder="Main text" value="{{postText}}">
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Post</button>
+    </form>
+</main>

@@ -16,6 +16,14 @@ exports.getAllBlogPosts = function(callback){
     })
 }
 
+exports.getBlogPostById = function(id, callback){
+    const query = "SELECT * FROM blogpost WHERE blogpostID = ?"
+    const values = [id]
+
+    db.get(query, values, function(error, blogpost){
+        callback(error, blogpost)
+    })
+}
 
 exports.createNewBlogPost = function(postHeader, postText, postDate, callback){
     const query = "INSERT INTO blogpost (blogpostHeader, blogpostText, blogpostDate) VALUES (?, ?, ?)"

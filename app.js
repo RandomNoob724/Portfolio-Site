@@ -4,7 +4,10 @@ const expressSession = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const SQLiteStore = require('connect-sqlite3')(expressSession)
+//routers
 const blogRouter = require('./blogRouter')
+const portfolioRouter = require('./portfolioRouter')
+const commentRouter = require('./commentRounter')
 
 const db = require('./db')
 
@@ -12,6 +15,10 @@ const app = express()
 
 const username = "RandomAdmin"
 const password = "admin123"
+
+/*
+* Make sure to make the cookies work together with the sessions
+*/
 
 //Used for the body parser, used when handling forms
 app.use(bodyParser.urlencoded({
@@ -29,37 +36,25 @@ app.use(expressSession({
   store: new SQLiteStore()
 }))
 
+app.use(function(request, response, next){
+  response.locals.isLoggedIn = request.session.isLoggedIn
+  next()
+})
+
 app.use('/blog', blogRouter)
+
+app.use('/portfolio', portfolioRouter)
+
+//Unclear if this is a resource that is supposed to be used as a router
+//app.use('/comment', commentRouter)
 
 app.engine("hbs", expressHandlebars({
   defaultLayout: 'main.hbs'
 })
 )
 
-app.use(function(request, response, next){
-  response.locals.isLoggedIn = request.session.isLoggedIn
-  next()
-})
-
 app.get('/', function(request, response){
   response.render("home.hbs")
-})
-
-app.get('/portfolio', function(request, response){
-  db.getProjects(function(error, projects){
-    if(error){
-      const model = {
-        somethingWentWrong: true
-      }
-      response.render("portfolio.hbs", model)
-    }else{
-      const model = {
-        somethingWentWrong: false,
-        projects
-      }
-      response.render("portfolio.hbs", model)
-    }
-  })
 })
 
 app.get('/about', function(request, response){
@@ -81,8 +76,8 @@ app.get('/login', function(request, response){
 app.post('/login', function(request, response){
   const inputedUsername = request.body.username
   const inputedPassword = request.body.password
-
   const validationErrors = []
+
   if(inputedUsername != username){
     validationErrors.push("Username does not match existing username")
   }
@@ -103,6 +98,11 @@ app.post('/login', function(request, response){
     }
     response.render("login.hbs", model)
   }
+})
+
+app.get('/logout', function(request, response){
+  request.session.isLoggedIn = false
+  response.redirect("/")
 })
 
 app.listen(8080, () =>{

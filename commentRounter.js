@@ -3,4 +3,6 @@ const db = require('./db')
 
 const router = express.Router()
 
+router.get('/create-comment')
+
 module.exports = router

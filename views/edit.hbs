@@ -20,12 +20,11 @@
             </div>
             <br>
             <div class="form-label-group">
-                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}">
+                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{blogpost.blogpostHeader}}">
             </div>
             <br>
             <div class="form-label-group">
-                <input name="blogpostText" type="text" id="blogpostText">
-                {{!-- <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20">{{postText}}</textarea> --}}
+                <textarea name="blogpostText" class="form-control" placeholder="Main content">{{blogpost.blogpostText}}</textarea>
             </div>
             <br>
             <div class="form-label-group">

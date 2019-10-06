@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.use(express.static('public'))
 
-router.get('/portfolio', function(request, response){
+router.get('/', function(request, response){
     db.getProjects(function(error, projects){
         if(error){
         const model = {

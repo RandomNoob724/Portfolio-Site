@@ -4,8 +4,12 @@
         <div class="col-md-12 align-items-md-center">
             <h1 class="my-4 text-center">Blog Posts</h1>
             <!-- Blog Post -->
+            {{#if couldNotDeletePost}}
+                <h3>The server could not delete the post please try again or contact server admin</h3>
+            {{/if}}
             {{#if somethingWentWrong}}
-                <h1>Internal server error...</h1>
+                <h3>Sorry!</h3>
+                <p>Somwthing went wrong when loading the blog posts</p>
             {{else}}
                 <!-- For each blog post that is in the data file it will generate a blog post -->
                 {{#if blogpost.length}}
@@ -18,14 +22,16 @@
                                 <a href="/blog/{{blogpostID}}" class="btn btn-primary">Read More →</a>
                             </div>
                             <div class="card-footer text-muted">
-                            Posted on {{blogpostDate}} by
-                            <a href="#">Start Bootstrap</a>
+                            Posted on {{blogpostDate}} by Emil Persson
                             </div>
                         </div>
                     {{/each}}
-                {{else}}
-                    <h3>There are no blogposts currently</h3>
                 {{/if}}
+            {{/if}}
+            {{#if validationErrors.length}}
+                {{#each validationErrors}}
+                    <p>{{this}}</p>
+                {{/each}}
             {{/if}}
         </div>
     </div>

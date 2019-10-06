@@ -2,9 +2,21 @@
     <link rel="stylesheet" href="blogpost.css">
 </head>
 
+<br>
 <div class="container">
     <img class="col-md-12 col-sm-12" src="http://placehold.it/750x300" alt="">
     <h1 class="text-center">{{blogpost.blogpostHeader}}</h1>
     <p id="blog-main-text">{{blogpost.blogpostText}}</p>
-    <p>{{blogpost.blogpostDate}}</p>
+    <p>Posted {{blogpost.blogpostDate}}</p>
+    <!--This part is for the admin to be able to delete a specific post depending on the blogpost ID-->
+    {{#if isLoggedIn}}
+        <form action="/blog/{{blogpost.blogpostID}}/delete-post" method="POST">
+            <button class="btn btn-danger">Delete</button>
+        </form>
+        <br>
+        <form action="/blog/{{blogpost.blogpostID}}/edit" method="GET">
+            <button class="btn btn-secondary">Edit</button>
+        </form>
+    {{/if}}
 </div>
+<br>

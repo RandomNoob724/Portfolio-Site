@@ -7,7 +7,7 @@ const SQLiteStore = require('connect-sqlite3')(expressSession)
 //routers
 const blogRouter = require('./blogRouter')
 const portfolioRouter = require('./portfolioRouter')
-const commentRouter = require('./commentRounter')
+
 
 const db = require('./db')
 
@@ -50,8 +50,7 @@ app.use('/portfolio', portfolioRouter)
 
 app.engine("hbs", expressHandlebars({
   defaultLayout: 'main.hbs'
-})
-)
+}))
 
 app.get('/', function(request, response){
   response.render("home.hbs")
@@ -66,7 +65,12 @@ app.get('/contact', function(request, response){
 })
 
 app.get('/admin', function(request, response){
-  response.render('admin.hbs')
+  if(request.session.isLoggedIn){
+    response.render('admin.hbs')
+  }else{
+    console.log("Visitor trying to access the admin site without valid login")
+    response.redirect('/')
+  }
 })
 
 app.get('/login', function(request, response){
@@ -86,15 +90,15 @@ app.post('/login', function(request, response){
   }
   if(request.body.username == username && request.body.password == password){
     const model = {
-      somethingWentWrong: false,
-      username: request.body.username
+      somethingWentWrong: false
     }
     request.session.isLoggedIn = true
     response.redirect("/")
   } else {
     const model = {
       somethingWentWrong: true,
-      validationErrors
+      validationErrors,
+      username: request.body.username
     }
     response.render("login.hbs", model)
   }

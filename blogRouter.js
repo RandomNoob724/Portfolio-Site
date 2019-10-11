@@ -30,8 +30,6 @@ router.get('/', function(request, response){
   })
 })
 
-// Here should be implemented a function to search for blogposts
-
 router.get('/create', function(request, response){
   const model = {
     validationErrors: []

@@ -32,6 +32,12 @@
         {{{blogpost.blogpostText}}}
         <hr>
 
+        {{#if validationErrors.length}}
+          {{#each validationErrors}}
+            <p>{{this}}</p>
+          {{/each}}
+        {{/if}}
+
         <h3>Comments</h3>
         {{#if comments.length}}
           {{#each comments}}

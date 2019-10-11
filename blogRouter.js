@@ -123,14 +123,24 @@ router.get('/:id/edit', function(request, response){
 router.get('/:id/delete-post', function(request, response){
   const blogpostID = request.params.id
   const validationErrors = []
-  db.deleteBlogPost(blogpostID, function(error){
+
+  db.deleteAllCommentWithId(blogpostID, function(error){
     if(error){
       const model = {
         couldNotDeletePost: true
       }
-      response.render('/blog', model)
+      response.render("blog.hbs", model)
     }else{
-      response.redirect('/blog')
+      db.deleteBlogPost(blogpostID, function(error){
+        if(error){
+          const model = {
+            couldNotDeletePost: true
+          }
+          response.render("blog.hbs", model)
+        }else{
+          response.redirect('/blog')
+        }
+      })
     }
   })
 })

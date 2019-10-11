@@ -56,7 +56,6 @@ exports.updateBlogPost = function(updatedpostHeader, updatedpostText, postID, ca
 exports.deleteBlogPost = function(postID, callback){
     const query = "DELETE FROM blogpost WHERE blogpostID = ?"
     const values = [postID]
-
     db.run(query, values, function(error){
         callback(error)
     })
@@ -67,6 +66,15 @@ exports.getAllCommentsOnPost = function(id, callback){
     const values = [id]
     db.all(query, values, function(error, comment){
         callback(error, comment)
+    })
+}
+
+exports.deleteAllCommentWithId = function(blogpostID, callback){
+    const query = "DELETE FROM comment WHERE blogpostID = ?"
+    const values = [blogpostID]
+
+    db.run(query, values, function(error){
+        callback(error)
     })
 }
 

@@ -9,8 +9,6 @@ const router = express.Router()
 
 router.use(express.static("public"))
 
-router.use('/comment', commentRouter)
-
 router.get('/', function(request, response){
   const isLoggedIn = request.session.isLoggedIn
   db.getAllBlogPosts(function(error, blogpost){
@@ -26,6 +24,7 @@ router.get('/', function(request, response){
         somethingWentWrong: false,
         blogpost
       }
+      model.blogpost.reverse()
       response.render("blog.hbs", model)
     }
   })
@@ -85,16 +84,21 @@ router.get('/:id', function(request, response){
         if(error){
             console.log("something went wrong")
         }else{
-            const model = {
-              validationErrors,
-              blogpost
-            }
-            if(blogpost == null){
-              validationErrors.push("There are no posts with this id")
-              response.render("blog.hbs", model)
-            }else{
+            db.getAllCommentsOnPost(id, function(error, comments){
+              const model = {
+                validationErrors,
+                blogpost,
+                comments
+              }
+              if(error){
+                console.log(error)
+              }
+              if(blogpost == null){
+                validationErrors.push("There are no posts with this id")
+                response.render("blog.hbs", model)
+              }
               response.render("post.hbs", model)
-            }
+            })
         }
     })
 })
@@ -115,21 +119,8 @@ router.get('/:id/edit', function(request, response){
   })
 })
 
-router.post('/:id/edit', function(request, response){
-  const blogpostID = request.params.id
-  const blogpostHeader = request.body.blogpostHeader
-  const blogpostText = request.body.blogpostText
-  db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function(error){
-    if(error){
-      console.log(error)
-    }else{
-      response.redirect('/blog/'+blogpostID)
-    }
-  })
-})
-
 //This sends a request to the server to delete a blogpost with the specific id that is loaded in to the url
-router.post('/:id/delete-post', function(request, response){
+router.get('/:id/delete-post', function(request, response){
   const blogpostID = request.params.id
   const validationErrors = []
   db.deleteBlogPost(blogpostID, function(error){
@@ -140,6 +131,19 @@ router.post('/:id/delete-post', function(request, response){
       response.render('/blog', model)
     }else{
       response.redirect('/blog')
+    }
+  })
+})
+
+router.post('/:id/edit', function(request, response){
+  const blogpostID = request.params.id
+  const blogpostHeader = request.body.blogpostHeader
+  const blogpostText = request.body.blogpostText
+  db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function(error){
+    if(error){
+      console.log(error)
+    }else{
+      response.redirect('/blog/'+blogpostID)
     }
   })
 })

@@ -4,9 +4,11 @@ const expressSession = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const SQLiteStore = require('connect-sqlite3')(expressSession)
+const bcrypt = require('bcrypt') //Make this work as soon as possible
 //routers
 const blogRouter = require('./blogRouter')
 const portfolioRouter = require('./portfolioRouter')
+const commentRouter = require('./commentRounter')
 
 
 const db = require('./db')
@@ -46,7 +48,7 @@ app.use('/blog', blogRouter)
 app.use('/portfolio', portfolioRouter)
 
 //Unclear if this is a resource that is supposed to be used as a router
-//app.use('/comment', commentRouter)
+app.use('/comment', commentRouter)
 
 app.engine("hbs", expressHandlebars({
   defaultLayout: 'main.hbs'

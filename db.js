@@ -61,3 +61,21 @@ exports.deleteBlogPost = function(postID, callback){
         callback(error)
     })
 }
+
+exports.getAllCommentsOnPost = function(id, callback){
+    const query = "SELECT * FROM comment WHERE blogpostID = ?"
+    const values = [id]
+    db.all(query, values, function(error, comment){
+        callback(error, comment)
+    })
+}
+
+exports.createComment = function(commenterName, commentMainText, blogpostID, callback){
+    const query = "INSERT INTO comment (commentPublisher, commentText, blogpostID) VALUES (?,?,?)"
+    const values = [commenterName, commentMainText, blogpostID]
+
+    db.run(query, values, function(error){
+        const id = this.lastID
+        callback(error, id)
+    })
+}

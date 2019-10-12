@@ -18,8 +18,8 @@ const app = express()
 
 const saltRounds = 10
 
+// Now using hashed password instead of using a password in plain text
 const username = "RandomAdmin"
-
 const hash = "$2b$10$b1tuiPuE98ROC7Bj4je6fOZOIO1Vehhe5mPoK1KWfGNkuaUGb./86"
 
 //Used for the body parser, used when handling forms
@@ -75,6 +75,19 @@ app.get('/admin', function (request, response) {
   }
 })
 
+app.get('/admin/manage-blog', function (request, response) {
+  db.getAllBlogPosts(function (error, blogposts) {
+    if (error) {
+
+    } else {
+      const model = {
+        blogposts
+      }
+      response.render("manage-blog.hbs", model)
+    }
+  })
+})
+
 app.get('/login', function (request, response) {
   response.render('login.hbs')
 })
@@ -92,7 +105,7 @@ app.post('/login', function (request, response) {
       }
       response.render("login.hbs", model)
     }
-    
+
     // Check if input is correct or not and push validationErrors to the validation error array
     if (inputedUsername != username) {
       validationErrors.push("Username does not match existing username")

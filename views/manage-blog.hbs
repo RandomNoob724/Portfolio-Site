@@ -1,0 +1,24 @@
+<div class="container-fluid">
+    <table class="table table-striped col-md" id="project-table">
+        <thead>
+            <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Edit</th>
+            <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#if blogposts.length}}
+                {{#each blogposts}}
+                    <tr>
+                        <td>{{blogpostHeader}}</td>
+                        <td><a class="btn btn-secondary" href="/blog/{{blogpostID}}/edit">Edit</a></td>
+                        <td><a class="btn btn-danger" href="/blog/{{blogpostID}}/delete-post">Delete</a></td>
+                    </tr>
+                {{/each}}
+            {{else}}
+                <td>No post found</td>
+            {{/if}}
+        </tbody>
+    </table>
+</div>

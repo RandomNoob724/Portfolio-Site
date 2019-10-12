@@ -2,16 +2,7 @@
     <link rel="stylesheet" href="blogpost.css">
 </head>
 <div class="container">
-    <div class="row">
-      {{#if isLoggedIn}}
-        <form method="POST">
-            <a href="/blog/{{blogpost.blogpostID}}/delete-post" class="btn btn-danger">Delete</a>
-        </form>
-        <br>
-        <form method="GET">
-            <a href="/blog/{{blogpost.blogpostID}}/edit" class="btn btn-secondary">Edit</a>
-        </form>
-      {{/if}}
+  <div class="row">
       <!-- Post Content Column -->
       <div class="col-lg-12">
         <!-- Title -->
@@ -26,10 +17,12 @@
         <p>Posted on {{blogpost.blogpostDate}}</p>
         <hr>
         <!-- Preview Image -->
-        <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
-        <hr>
+        {{!-- <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+        <hr> --}}
         <!-- Post Content -->
-        {{{blogpost.blogpostText}}}
+        <div class="font-weight-light" style="font-size: 115%;">
+          {{{blogpost.blogpostText}}}
+        </div>
         <hr>
 
         {{#if validationErrors.length}}
@@ -57,6 +50,7 @@
           <div class="card-body">
             <form class="form" action="/comment/{{blogpost.blogpostID}}/publish-comment" method="POST">
               <div class="form-group">
+                <p>No inputed name makes your comment Anonymous</p>
                 <input class="form-control" type="text" name="commenterName" placeholder="Input your name here">
                 <textarea class="form-control mt-3" rows="3" name="commentMainText" placeholder="Input comment text here"></textarea>
               </div>

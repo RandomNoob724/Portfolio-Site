@@ -9,63 +9,64 @@ const router = express.Router()
 
 router.use(express.static("public"))
 
-router.get('/', function(request, response){
+router.get('/', function (request, response) {
   const isLoggedIn = request.session.isLoggedIn
-  db.getAllBlogPosts(function(error, blogpost){
-    if(error){
+  db.getAllBlogPosts(function (error, blogpost) {
+    if (error) {
       const model = {
         somethingWentWrong: true
       }
       response.render("blog.hbs", model)
-    }else{
+    } else {
       const model = {
         isLoggedIn,
         isSearchable: true,
         somethingWentWrong: false,
         blogpost
       }
+      // reversing the array of blogposts so that the newest blogpost comes first
       model.blogpost.reverse()
       response.render("blog.hbs", model)
     }
   })
 })
 
-router.get('/create', function(request, response){
+router.get('/create', function (request, response) {
   const model = {
     validationErrors: []
   }
-  if(request.session.isLoggedIn != true){
+  if (request.session.isLoggedIn != true) {
     response.send("You have to be logged in to use this resource")
-  }else{
+  } else {
     response.render('create-post.hbs', model)
   }
 })
 
-router.post('/create', function(request, response){
+router.post('/create', function (request, response) {
   let date = new Date()
   const postHeader = request.body.blogpostHeader
   const postText = request.body.blogpostText
   const postDate = date.toDateString()
 
   const validationErrors = []
-  if(postHeader == ""){
+  if (postHeader == "") {
     validationErrors.push("Must enter a Header for the post")
   }
 
-  if(postText == ""){
+  if (postText == "") {
     validationErrors.push("Mush enter a post body text")
   }
 
-  if(validationErrors.length == 0){
-    db.createNewBlogPost(postHeader, postText, postDate, function(error){
-      if(error){
+  if (validationErrors.length == 0) {
+    db.createNewBlogPost(postHeader, postText, postDate, function (error) {
+      if (error) {
         console.log("Internal server error...")
-      }else{
+      } else {
         //fix this so that the server redirects the user to the post site
         response.redirect('/blog')
       }
     })
-  }else{
+  } else {
     const model = {
       validationErrors,
       blogpostHeader,
@@ -75,39 +76,39 @@ router.post('/create', function(request, response){
   }
 })
 
-router.get('/:id', function(request, response){
-    var id = request.params.id
-    const validationErrors = []
-    db.getBlogPostById(id, function(error, blogpost){
-        if(error){
-            console.log("something went wrong")
-        }else{
-            db.getAllCommentsOnPost(id, function(error, comments){
-              const model = {
-                validationErrors,
-                blogpost,
-                comments
-              }
-              if(error){
-                console.log(error)
-              }
-              if(blogpost == null){
-                validationErrors.push("There are no posts with this id")
-                response.render("blog.hbs", model)
-              }
-              response.render("post.hbs", model)
-            })
+router.get('/:id', function (request, response) {
+  var id = request.params.id
+  const validationErrors = []
+  db.getBlogPostById(id, function (error, blogpost) {
+    if (error) {
+      console.log("something went wrong")
+    } else {
+      db.getAllCommentsOnPost(id, function (error, comments) {
+        const model = {
+          validationErrors,
+          blogpost,
+          comments
         }
-    })
+        if (error) {
+          console.log(error)
+        }
+        if (blogpost == null) {
+          validationErrors.push("There are no posts with this id")
+          response.render("blog.hbs", model)
+        }
+        response.render("post.hbs", model)
+      })
+    }
+  })
 })
 
-router.get('/:id/edit', function(request, response){
+router.get('/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const validationErrors = []
-  db.getBlogPostById(blogpostID, function(error, blogpost){
-    if(error){
+  db.getBlogPostById(blogpostID, function (error, blogpost) {
+    if (error) {
       console.log("Something went wrong when getting blogpost from the database")
-    }else{
+    } else {
       const model = {
         validationErrors,
         blogpost
@@ -118,40 +119,43 @@ router.get('/:id/edit', function(request, response){
 })
 
 //This sends a request to the server to delete a blogpost with the specific id that is loaded in to the url
-router.get('/:id/delete-post', function(request, response){
+router.get('/:id/delete-post', function (request, response) {
   const blogpostID = request.params.id
   const validationErrors = []
 
-  db.deleteAllCommentWithId(blogpostID, function(error){
-    if(error){
+  db.deleteAllCommentWithId(blogpostID, function (error) {
+    if (error) {
       const model = {
         couldNotDeletePost: true
       }
       response.render("blog.hbs", model)
-    }else{
-      db.deleteBlogPost(blogpostID, function(error){
-        if(error){
+    } else {
+      db.deleteBlogPost(blogpostID, function (error) {
+        if (error) {
           const model = {
             couldNotDeletePost: true
           }
           response.render("blog.hbs", model)
-        }else{
-          response.redirect('/blog')
+        } else {
+          response.redirect('/admin/manage-blog')
         }
       })
     }
   })
 })
 
-router.post('/:id/edit', function(request, response){
+router.post('/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const blogpostHeader = request.body.blogpostHeader
   const blogpostText = request.body.blogpostText
-  db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function(error){
-    if(error){
-      console.log(error)
-    }else{
-      response.redirect('/blog/'+blogpostID)
+  db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function (error) {
+    if (error) {
+      const model = {
+        somethingWentWrong: true
+      }
+      response.render("blog.hbs", model)
+    } else {
+      response.redirect('/blog/' + blogpostID)
     }
   })
 })

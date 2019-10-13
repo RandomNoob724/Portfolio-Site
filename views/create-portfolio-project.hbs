@@ -1,12 +1,8 @@
-<head>
-    <link rel="stylesheet" href="create-post.css">
-</head>
-
 <main>
     <br>
     <div class="jumbotron container">
-        <form class="form-createpost form" method="POST" action="/blog/{{blogpost.blogpostID}}/edit">
-            <h1 class="text-center">Edit blog-post</h1>
+        <form class="form-createpost form" method="POST" action="/portfolio/create">
+            <h1 class="text-center">Add new portfolio Project</h1>
             <div class="text-center mb-4">
                 <h1 class="h3 mb-3 font-weight-normal">Write new post</h1>
                 {{#if validationErrors.length}}
@@ -20,16 +16,15 @@
             </div>
             <br>
             <div class="form-label-group">
-                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{blogpost.blogpostHeader}}">
+                <input name="projectName" type="text" class="form-control" placeholder="Project Name" value="{{projectName}}">
             </div>
             <br>
             <div class="form-label-group">
-                <textarea name="blogpostText" class="form-control" rows="10" placeholder="Main content">{{blogpost.blogpostText}}</textarea>
+                <textarea name="projectDescription" class="form-control" placeholder="Short description about the project" rows="5">{{projectDescription}}</textarea>
             </div>
             <br>
             <div class="form-label-group">
-                {{!-- Use multer for handeling images --}}
-                <input name="blogpostImage" type="file" id="blogpostImage" accept="image/*">
+                <input name="projectLink" class="form-control" placeholder="Link to project" type="text">
             </div>
             <br>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Post</button>

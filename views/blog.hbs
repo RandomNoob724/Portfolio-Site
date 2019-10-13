@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="blogpost.css">
+
 <!-- Generates html code for every blog post that it reads from the dummy-data.js-->
 <div class="container">
     <div class="row">
@@ -7,18 +9,24 @@
             {{#if couldNotDeletePost}}
                 <h3>The server could not delete the post please try again or contact server admin</h3>
             {{/if}}
+            {{#if notLoggedIn}}
+                {{#if validationErrors.length}}
+                    {{#each validationErrors}}
+                        <p>{{this}}</p>
+                    {{/each}}
+                {{/if}}
+            {{/if}}
             {{#if somethingWentWrong}}
                 <h3>Sorry!</h3>
-                <p>Somwthing went wrong when loading the blog posts</p>
+                <p>Something went wrong when loading the blog posts</p>
             {{else}}
                 <!-- For each blog post that is in the data file it will generate a blog post -->
                 {{#if blogpost.length}}
                     {{#each blogpost}}
-                        <div class="my-4 card">
-                            <img class="card-img-top" src="http://placehold.it/750x300" alt="Card image cap">
+                        <div class="my-5 card">
                             <div class="card-body">
                                 <h2 class="card-title text-center">{{blogpostHeader}}</h2>
-                                <p class="card-text">{{{blogpostText}}}</p>
+                                <p class="card-text preview-text font-weight-light">{{{blogpostText}}}</p>
                                 <a href="/blog/{{blogpostID}}" class="btn btn-primary">Read More →</a>
                             </div>
                             <div class="card-footer text-muted">
@@ -27,11 +35,6 @@
                         </div>
                     {{/each}}
                 {{/if}}
-            {{/if}}
-            {{#if validationErrors.length}}
-                {{#each validationErrors}}
-                    <p>{{this}}</p>
-                {{/each}}
             {{/if}}
         </div>
     </div>

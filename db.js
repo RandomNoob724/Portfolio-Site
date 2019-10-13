@@ -8,12 +8,20 @@ exports.getProjects = function (callback) {
     })
 }
 
-exports.addNewProject = function (projectName, projectLink, callback) {
-    const query = "INSERT INTO project (projectName, projectLink) VALUES (?,?)"
-    const values = [projectName, projectLink]
+exports.addNewProject = function (projectName, projectDescription, projectLink, callback) {
+    const query = "INSERT INTO projects (name, description, link) VALUES (?,?,?)"
+    const values = [projectName, projectDescription, projectLink]
     db.run(query, values, function (error) {
         const projectID = this.lastID
         callback(error, projectID)
+    })
+}
+
+exports.deleteProjectWithId = function(id, callback){
+    const query = "DELETE FROM projects WHERE id = ?"
+    const values = [id]
+    db.run(query, values, function(error){
+        callback(error)
     })
 }
 

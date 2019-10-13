@@ -4,13 +4,13 @@ const expressSession = require('express-session')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
 const SQLiteStore = require('connect-sqlite3')(expressSession)
-const bcrypt = require('bcrypt') //Make this work as soon as possible
+const bcrypt = require('bcrypt')
+const csurf = require('csurf')
 
 //routers
 const blogRouter = require('./blogRouter')
 const portfolioRouter = require('./portfolioRouter')
 const commentRouter = require('./commentRounter')
-
 
 const db = require('./db')
 
@@ -21,6 +21,8 @@ const saltRounds = 10
 // Now using hashed password instead of using a password in plain text
 const username = "RandomAdmin"
 const hash = "$2b$10$b1tuiPuE98ROC7Bj4je6fOZOIO1Vehhe5mPoK1KWfGNkuaUGb./86"
+
+const csrfProtection = csurf({cookie: true})
 
 //Used for the body parser, used when handling forms
 app.use(bodyParser.urlencoded({
@@ -88,8 +90,29 @@ app.get('/admin/manage-blog', function (request, response) {
   })
 })
 
+app.get('/admin/manage-projects', function(request, response){
+  db.getProjects(function(error, projects){
+    if(error){
+      // Do something
+    } else {
+      const model = {
+        projects
+      }
+      response.render("manage-portfolio.hbs", model)
+    }
+  })
+})
+
 app.get('/login', function (request, response) {
-  response.render('login.hbs')
+  const alreadyLoggedIn = "You are already logged in"
+  if(request.session.isLoggedIn){
+    const model = {
+      alreadyLoggedIn
+    }
+    response.render('login.hbs', model)
+  } else {
+    response.render('login.hbs')
+  }
 })
 
 app.post('/login', function (request, response) {
@@ -137,10 +160,24 @@ app.get('/logout', function (request, response) {
   response.redirect("/")
 })
 
-app.listen(8080, () => {
-  console.log("server is starting on port", 8080)
+app.get('/error', function (request, response, next) {
+  const statusError = []
+  const funnyErrorPicture = ""
+  if(response.status(500)){
+    statusError.push("Internal Server Error, We're sorry for this and trying to fix it as soon as possible")
+    const model = {
+      statusError
+    }
+    response.render("error.hbs", model)
+  } else if(response.status(404)){
+    statusError.push("Page not found")
+    const model = {
+      statusError
+    }
+    response.render("error.hbs", model)
+  }
 })
 
-app.use(function (request, response, next) {
-  response.status(404).send("Error 404. Sorry can't find that!")
+app.listen(8080, () => {
+  console.log("server is starting on port", 8080)
 })

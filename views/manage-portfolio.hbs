@@ -3,17 +3,15 @@
         <thead>
             <tr>
             <th scope="col">Title</th>
-            <th scope="col">Edit</th>
             <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
-            {{#if blogposts.length}}
-                {{#each blogposts}}
+            {{#if projects.length}}
+                {{#each projects}}
                     <tr>
-                        <td>{{blogpostHeader}}</td>
-                        <td><a class="text-light" href="/blog/{{blogpostID}}/edit"><button class="btn btn-secondary">Edit</button></a></td>
-                        <td><a class="text-light" href="/blog/{{blogpostID}}/delete-post"><button class="btn btn-danger">Delete</button></a></td>
+                        <td>{{name}}</td>
+                        <td><a class="text-light" href="/portfolio/{{id}}/delete"><button class="btn btn-danger">Delete</button></a></td>
                     </tr>
                 {{/each}}
             {{else}}

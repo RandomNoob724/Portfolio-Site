@@ -1,3 +1,15 @@
 #blog-main-text {
     font-size: 1.5em;
 }
+
+.preview-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    line-height: 1em;    
+    max-height: 4em;     
+    -webkit-line-clamp: 5; /* Write the number of 
+                              lines you want to be 
+                              displayed */
+    -webkit-box-orient: vertical;
+}

@@ -16,7 +16,8 @@ router.get('/', function (request, response) {
       const model = {
         somethingWentWrong: true
       }
-      response.render("blog.hbs", model)
+      response.statusCode = 500
+      response.redirect('/error')
     } else {
       const model = {
         isLoggedIn,
@@ -95,8 +96,9 @@ router.get('/:id', function (request, response) {
         if (blogpost == null) {
           validationErrors.push("There are no posts with this id")
           response.render("blog.hbs", model)
+        } else {
+          response.render("post.hbs", model)
         }
-        response.render("post.hbs", model)
       })
     }
   })
@@ -108,12 +110,35 @@ router.get('/:id/edit', function (request, response) {
   db.getBlogPostById(blogpostID, function (error, blogpost) {
     if (error) {
       console.log("Something went wrong when getting blogpost from the database")
+    } else if(request.session.isLoggedIn != true) {
+      validationErrors.push("You have to log in to access this part of the website")
+      const model = {
+        notLoggedIn: true,
+        validationErrors
+      }
+      response.render("blog.hbs", model)
     } else {
       const model = {
         validationErrors,
         blogpost
       }
       response.render("edit.hbs", model)
+    }
+  })
+})
+
+router.post('/:id/edit', function (request, response) {
+  const blogpostID = request.params.id
+  const blogpostHeader = request.body.blogpostHeader
+  const blogpostText = request.body.blogpostText
+  db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function (error) {
+    if (error) {
+      const model = {
+        somethingWentWrong: true
+      }
+      response.render("blog.hbs", model)
+    } else {
+      response.redirect('/blog/' + blogpostID)
     }
   })
 })
@@ -140,22 +165,6 @@ router.get('/:id/delete-post', function (request, response) {
           response.redirect('/admin/manage-blog')
         }
       })
-    }
-  })
-})
-
-router.post('/:id/edit', function (request, response) {
-  const blogpostID = request.params.id
-  const blogpostHeader = request.body.blogpostHeader
-  const blogpostText = request.body.blogpostText
-  db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function (error) {
-    if (error) {
-      const model = {
-        somethingWentWrong: true
-      }
-      response.render("blog.hbs", model)
-    } else {
-      response.redirect('/blog/' + blogpostID)
     }
   })
 })

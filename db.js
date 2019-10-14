@@ -69,6 +69,15 @@ exports.deleteBlogPost = function (postID, callback) {
     })
 }
 
+exports.searchBlogPostForKeyWord = function(search, callback){
+    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ?) OR (blogpostHeader LIKE ?)"
+    const values = ['%'+search+'%', '%'+search+'%']
+
+    db.all(query, values, function(error, blogposts){
+        callback(error, blogposts)
+    })
+}
+
 exports.getAllCommentsOnPost = function (id, callback) {
     const query = "SELECT * FROM comment WHERE blogpostID = ?"
     const values = [id]

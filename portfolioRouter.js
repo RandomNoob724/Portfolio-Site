@@ -40,7 +40,7 @@ router.post('/create', function(request, response){
     })
 })
 
-router.get('/:id/delete', function(request, response){
+router.post('/:id/delete', function(request, response){
     const id = request.params.id
     db.deleteProjectWithId(id, function(error){
         if(error){

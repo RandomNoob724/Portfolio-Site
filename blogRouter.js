@@ -32,6 +32,22 @@ router.get('/', function (request, response) {
   })
 })
 
+router.post('/search', function(request, response){
+  const keyWord = request.body.inputedSearch
+  
+
+  db.searchBlogPostForKeyWord(keyWord, function(error, blogposts){
+    if(error){
+      console.log(error)
+    } else {
+      const model = {
+        blogpost: blogposts
+      }
+      response.render("blog.hbs", model)
+    }
+  })
+})
+
 router.get('/create', function (request, response) {
   const model = {
     validationErrors: []
@@ -144,7 +160,7 @@ router.post('/:id/edit', function (request, response) {
 })
 
 //This sends a request to the server to delete a blogpost with the specific id that is loaded in to the url
-router.get('/:id/delete-post', function (request, response) {
+router.post('/:id/delete-post', function (request, response) {
   const blogpostID = request.params.id
   const validationErrors = []
 

@@ -11,7 +11,11 @@
                 {{#each projects}}
                     <tr>
                         <td>{{name}}</td>
-                        <td><a class="text-light" href="/portfolio/{{id}}/delete"><button class="btn btn-danger">Delete</button></a></td>
+                        <td>
+                            <form method="POST" action="/portfolio/{{id}}/delete">
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                 {{/each}}
             {{else}}

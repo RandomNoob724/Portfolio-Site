@@ -12,9 +12,9 @@
                 {{#each blogposts}}
                     <tr>
                         <td>{{blogpostHeader}}</td>
-                        <td><a class="text-light" href="/blog/{{blogpostID}}/edit"><button class="btn btn-secondary">Edit</button></a></td>
+                        <td><a class="text-light" href="/blog/post/{{blogpostID}}/edit"><button class="btn btn-secondary">Edit</button></a></td>
                         <td>
-                            <form method="POST" action="/blog/{{blogpostID}}/delete-post">
+                            <form method="POST" action="/blog/post/{{blogpostID}}/delete-post">
                                 <button class="btn btn-danger" type="submit">Delete</button>
                             </form>
                         </td>

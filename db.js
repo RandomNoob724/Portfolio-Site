@@ -26,7 +26,7 @@ exports.deleteProjectWithId = function(id, callback){
 }
 
 exports.getAllBlogPosts = function (callback) {
-    const query = "SELECT * FROM blogpost"
+    const query = "SELECT * FROM blogpost ORDER BY blogpostID DESC"
 
     db.all(query, function (error, blogpost) {
         callback(error, blogpost)
@@ -39,6 +39,15 @@ exports.getBlogPostById = function (id, callback) {
 
     db.get(query, values, function (error, blogpost) {
         callback(error, blogpost)
+    })
+}
+
+exports.getBlogPostWithinLimit = function(limit, offset, callback){
+    const query = "SELECT * FROM blogpost ORDER BY blogpostID DESC LIMIT ? OFFSET ?"
+    const values = [limit, offset]
+
+    db.all(query, values, function(error, blogposts){
+        callback(error, blogposts)
     })
 }
 
@@ -70,7 +79,7 @@ exports.deleteBlogPost = function (postID, callback) {
 }
 
 exports.searchBlogPostWithKeyword = function(search, callback){
-    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ? OR blogpostHeader LIKE ?)"
+    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ? OR blogpostHeader LIKE ?) ORDER BY blogpostID DESC"
     const values = ['%'+search+'%', '%'+search+'%']
 
     db.all(query, values, function(error, blogposts){

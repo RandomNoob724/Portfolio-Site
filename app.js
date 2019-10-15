@@ -139,9 +139,6 @@ app.post('/login', function (request, response) {
     }
 
     if (inputedUsername == username && passwordMatch) {
-      const model = {
-        somethingWentWrong: false
-      }
       request.session.isLoggedIn = true
       response.redirect("/")
     } else {

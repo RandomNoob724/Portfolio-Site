@@ -1,11 +1,14 @@
 //node packages
 const express = require('express')
+const multer = require('multer')
 
 //files
 const commentRouter = require('./commentRounter')
 const db = require('./db')
 
 const router = express.Router()
+
+const upload = multer({dest: 'public/uploads/'})
 
 router.use(express.static("public"))
 
@@ -21,79 +24,13 @@ router.get('/', function (request, response) {
     } else {
       const model = {
         isLoggedIn,
-        isSearchable: true,
         somethingWentWrong: false,
         blogpost
       }
       // reversing the array of blogposts so that the newest blogpost comes first
-      model.blogpost.reverse()
       response.render("blog.hbs", model)
     }
   })
-})
-
-router.get('/search', function(request, response){
-  let keyWord = request.query.inputedSearch
-  let dateFrom = new Date(request.query.dateFrom)
-  let dateTo = new Date(request.query.dateTo)
-  dateFrom = dateFrom.getTime()
-  dateTo = dateTo.getTime()
-
-  const validationErrors = []
-
-  // If you've not entered a date or a keyword you should not be able to search
-  if(keyWord == "" && Number.isNaN(dateFrom) == true && Number.isNaN(dateTo) == true) {
-    console.log("Error");
-    validationErrors.push("Can't search for empty string")
-    db.getAllBlogPosts(function(error, blogposts){
-      if(error){
-        console.log(error)
-      } else {
-        const model = {
-          validationErrors,
-          blogpost: blogposts
-        }
-        model.blogpost.reverse()
-        response.render("blog.hbs", model)
-      }
-    })
-  } else if(Number.isNaN(dateFrom) && Number.isNaN(dateTo)){ //Here we're searching with keyword
-    db.searchBlogPostWithKeyword(keyWord, function(error, blogposts){
-      if(error){
-        console.log(error)
-      } else {
-        const model = {
-          blogpost: blogposts
-        }
-        model.blogpost.reverse()
-        response.render("blog.hbs", model)
-      }
-    })
-  } else if(keyWord == "" && Number.isNaN(dateFrom) == false && Number.isNaN(dateTo) == false){ //Here we're searching with date
-    db.searchBlogPostWithDate(dateFrom, dateTo, function(error, blogposts){
-      if(error){
-        console.log(error)
-      } else {
-        const model = {
-          blogpost: blogposts
-        }
-        model.blogpost.reverse()
-        response.render("blog.hbs", model)
-      }
-    })
-  } else {
-    db.searchBlogPost(keyWord, dateFrom, dateTo, function(error, blogposts){
-      if(error){
-        console.log(error)
-      } else {
-        const model = {
-          blogpost: blogposts
-        }
-        model.blogpost.reverse()
-        response.render("blog.hbs", model)
-      }
-    })
-  }
 })
 
 router.get('/create', function (request, response) {
@@ -128,8 +65,7 @@ router.post('/create', function (request, response) {
       if (error) {
         console.log("Internal server error...")
       } else {
-        //fix this so that the server redirects the user to the post site
-        response.redirect('/blog')
+        response.redirect('/blog/1')
       }
     })
   } else {
@@ -142,7 +78,96 @@ router.post('/create', function (request, response) {
   }
 })
 
-router.get('/:id', function (request, response) {
+router.get('/search', function(request, response){
+  let keyWord = request.query.inputedSearch
+  let dateFrom = new Date(request.query.dateFrom)
+  let dateTo = new Date(request.query.dateTo)
+  dateFrom = dateFrom.getTime()
+  dateTo = dateTo.getTime()
+
+  const validationErrors = []
+
+  // If you've not entered a date or a keyword you should not be able to search
+  if(keyWord == "" && Number.isNaN(dateFrom) == true && Number.isNaN(dateTo) == true) {
+    console.log("Error");
+    validationErrors.push("Can't search for empty string")
+    db.getAllBlogPosts(function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          validationErrors,
+          blogpost: blogposts
+        }
+        response.render("blog.hbs", model)
+      }
+    })
+  } else if(Number.isNaN(dateFrom) && Number.isNaN(dateTo)){ //Here we're searching with keyword
+    db.searchBlogPostWithKeyword(keyWord, function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          blogpost: blogposts
+        }
+        response.render("blog.hbs", model)
+      }
+    })
+  } else if(keyWord == "" && Number.isNaN(dateFrom) == false && Number.isNaN(dateTo) == false){ //Here we're searching with date
+    db.searchBlogPostWithDate(dateFrom, dateTo, function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          blogpost: blogposts
+        }
+        response.render("blog.hbs", model)
+      }
+    })
+  } else {
+    db.searchBlogPost(keyWord, dateFrom, dateTo, function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          blogpost: blogposts
+        }
+        response.render("blog.hbs", model)
+      }
+    })
+  }
+})
+
+// pagination
+router.get('/:id', function(request, response){
+  const pageNumber = request.params.id
+  let postsPerPage = 3
+  let startIndex = (pageNumber - 1) * postsPerPage
+  let endIndex = Math.min(startIndex + postsPerPage, pageNumber * postsPerPage)
+
+  db.getBlogPostWithinLimit(postsPerPage, endIndex, function(error, blogposts){
+    previousPage =  parseInt(pageNumber) - 1
+    nextPage = parseInt(pageNumber) + 1
+    if(error){
+      console.log(error)
+    } else {
+      if(pageNumber == 1){
+        previousPage = 1
+        disabledNext = true
+      }
+      const model = {
+        previousPage,
+        nextPage,
+        blogpost: blogposts
+      }
+      console.log(endIndex)
+      console.log(blogposts)
+      response.render("blog.hbs", model)
+    }
+  })
+})
+
+router.get('/post/:id', function (request, response) {
   var id = request.params.id
   const validationErrors = []
   db.getBlogPostById(id, function (error, blogpost) {
@@ -169,7 +194,7 @@ router.get('/:id', function (request, response) {
   })
 })
 
-router.get('/:id/edit', function (request, response) {
+router.get('/post/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const validationErrors = []
   db.getBlogPostById(blogpostID, function (error, blogpost) {
@@ -192,7 +217,7 @@ router.get('/:id/edit', function (request, response) {
   })
 })
 
-router.post('/:id/edit', function (request, response) {
+router.post('/post/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const blogpostHeader = request.body.blogpostHeader
   const blogpostText = request.body.blogpostText
@@ -209,7 +234,7 @@ router.post('/:id/edit', function (request, response) {
 })
 
 //This sends a request to the server to delete a blogpost with the specific id that is loaded in to the url
-router.post('/:id/delete-post', function (request, response) {
+router.post('/post/:id/delete-post', function (request, response) {
   const blogpostID = request.params.id
   const validationErrors = []
 

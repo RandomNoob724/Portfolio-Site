@@ -42,9 +42,9 @@ exports.getBlogPostById = function (id, callback) {
     })
 }
 
-exports.createNewBlogPost = function (postHeader, postText, postDate, callback) {
-    const query = "INSERT INTO blogpost (blogpostHeader, blogpostText, blogpostDate) VALUES (?, ?, ?)"
-    const values = [postHeader, postText, postDate]
+exports.createNewBlogPost = function (postHeader, postText, postDate, timestampPosted, callback) {
+    const query = "INSERT INTO blogpost (blogpostHeader, blogpostText, blogpostDate, timestampPosted) VALUES (?, ?, ?, ?)"
+    const values = [postHeader, postText, postDate, timestampPosted]
 
     db.run(query, values, function (error) {
         const id = this.lastID
@@ -69,9 +69,27 @@ exports.deleteBlogPost = function (postID, callback) {
     })
 }
 
-exports.searchBlogPostForKeyWord = function(search, callback){
-    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ?) OR (blogpostHeader LIKE ?)"
+exports.searchBlogPostWithKeyword = function(search, callback){
+    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ? OR blogpostHeader LIKE ?)"
     const values = ['%'+search+'%', '%'+search+'%']
+
+    db.all(query, values, function(error, blogposts){
+        callback(error, blogposts)
+    })
+}
+
+exports.searchBlogPostWithDate = function(dateFrom, dateTo, callback){
+    const query = "SELECT * FROM blogpost WHERE timestampPosted BETWEEN ? AND ?"
+    const values = [dateFrom, dateTo]
+
+    db.all(query, values, function(error, blogposts){
+        callback(error, blogposts)
+    })
+}
+
+exports.searchBlogPost = function(keyWord, dateFrom, dateTo, callback){
+    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ? OR blogpostHeader LIKE ?) AND timestampPosted BETWEEN ? AND ?"
+    const values = ['%'+keyWord+'%', '%'+keyWord+'%', dateFrom, dateTo]
 
     db.all(query, values, function(error, blogposts){
         callback(error, blogposts)

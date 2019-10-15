@@ -32,20 +32,68 @@ router.get('/', function (request, response) {
   })
 })
 
-router.post('/search', function(request, response){
-  const keyWord = request.body.inputedSearch
-  
+router.get('/search', function(request, response){
+  let keyWord = request.query.inputedSearch
+  let dateFrom = new Date(request.query.dateFrom)
+  let dateTo = new Date(request.query.dateTo)
+  dateFrom = dateFrom.getTime()
+  dateTo = dateTo.getTime()
 
-  db.searchBlogPostForKeyWord(keyWord, function(error, blogposts){
-    if(error){
-      console.log(error)
-    } else {
-      const model = {
-        blogpost: blogposts
+  const validationErrors = []
+
+  // If you've not entered a date or a keyword you should not be able to search
+  if(keyWord == "" && Number.isNaN(dateFrom) == true && Number.isNaN(dateTo) == true) {
+    console.log("Error");
+    validationErrors.push("Can't search for empty string")
+    db.getAllBlogPosts(function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          validationErrors,
+          blogpost: blogposts
+        }
+        model.blogpost.reverse()
+        response.render("blog.hbs", model)
       }
-      response.render("blog.hbs", model)
-    }
-  })
+    })
+  } else if(Number.isNaN(dateFrom) && Number.isNaN(dateTo)){ //Here we're searching with keyword
+    db.searchBlogPostWithKeyword(keyWord, function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          blogpost: blogposts
+        }
+        model.blogpost.reverse()
+        response.render("blog.hbs", model)
+      }
+    })
+  } else if(keyWord == "" && Number.isNaN(dateFrom) == false && Number.isNaN(dateTo) == false){ //Here we're searching with date
+    db.searchBlogPostWithDate(dateFrom, dateTo, function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          blogpost: blogposts
+        }
+        model.blogpost.reverse()
+        response.render("blog.hbs", model)
+      }
+    })
+  } else {
+    db.searchBlogPost(keyWord, dateFrom, dateTo, function(error, blogposts){
+      if(error){
+        console.log(error)
+      } else {
+        const model = {
+          blogpost: blogposts
+        }
+        model.blogpost.reverse()
+        response.render("blog.hbs", model)
+      }
+    })
+  }
 })
 
 router.get('/create', function (request, response) {
@@ -64,6 +112,7 @@ router.post('/create', function (request, response) {
   const postHeader = request.body.blogpostHeader
   const postText = request.body.blogpostText
   const postDate = date.toDateString()
+  const timestamp = date.getTime()
 
   const validationErrors = []
   if (postHeader == "") {
@@ -75,7 +124,7 @@ router.post('/create', function (request, response) {
   }
 
   if (validationErrors.length == 0) {
-    db.createNewBlogPost(postHeader, postText, postDate, function (error) {
+    db.createNewBlogPost(postHeader, postText, postDate, timestamp, function (error) {
       if (error) {
         console.log("Internal server error...")
       } else {

@@ -8,6 +8,24 @@ exports.getProjects = function (callback) {
     })
 }
 
+exports.getProjectWithId = function(id, callback){
+    const query = "SELECT * FROM projects WHERE id = ?"
+    const values = [id]
+
+    db.get(query, values, function(error, project){
+        callback(error, project)
+    })
+}
+
+exports.updateProjectWithId = function(title, description, link, id, callback){
+    const query = "UPDATE projects SET name = ?, description = ?, link = ? WHERE id = ?"
+    const values = [title, description, link, id]
+
+    db.run(query, values, function(error){
+        callback(error)
+    })
+}
+
 exports.addNewProject = function (projectName, projectDescription, projectLink, callback) {
     const query = "INSERT INTO projects (name, description, link) VALUES (?,?,?)"
     const values = [projectName, projectDescription, projectLink]
@@ -42,8 +60,16 @@ exports.getBlogPostById = function (id, callback) {
     })
 }
 
+exports.getAmountOfPosts = function(callback){
+    const query = "SELECT COUNT(*) AS nrOfRows FROM blogpost"
+
+    db.get(query, function(error, amount){
+        callback(error, amount)
+    })
+}
+
 exports.getBlogPostWithinLimit = function(limit, offset, callback){
-    const query = "SELECT * FROM blogpost ORDER BY blogpostID DESC LIMIT ? OFFSET ?"
+    const query = "SELECT * FROM blogpost ORDER BY blogpostID DESC LIMIT ? OFFSET ? "
     const values = [limit, offset]
 
     db.all(query, values, function(error, blogposts){
@@ -110,6 +136,15 @@ exports.getAllCommentsOnPost = function (id, callback) {
     const values = [id]
     db.all(query, values, function (error, comment) {
         callback(error, comment)
+    })
+}
+
+exports.deleteCommentWithId = function(commentID, callback){
+    const query = "DELETE FROM comment WHERE commentID = ?"
+    const values = [commentID]
+
+    db.run(query, values, function(error){
+        callback(error)
     })
 }
 

@@ -5,10 +5,9 @@
 <main>
     <br>
     <div class="jumbotron container">
-        <form class="form-createpost form" method="POST" action="/blog/create">
-            <h1 class="text-center">Create blog-post</h1>
+        <form class="form-createpost form" method="POST" action="/blog/post/{{blogpost.blogpostID}}/edit">
+            <h1 class="text-center">Edit blogpost</h1>
             <div class="text-center mb-4">
-                <h1 class="h3 mb-3 font-weight-normal">Write new post</h1>
                 {{#if validationErrors.length}}
                     <p>Errors:</p>
                     <ul>
@@ -21,17 +20,18 @@
             <br>
             <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div class="form-label-group">
-                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}">
+                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{blogpost.blogpostHeader}}">
             </div>
             <br>
             <div class="form-label-group">
-                <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20">{{postText}}</textarea>
+                <textarea name="blogpostText" class="form-control" rows="10" placeholder="Main content">{{blogpost.blogpostText}}</textarea>
             </div>
             <br>
-            {{!-- <div class="form-label-group">
-                <input name="blogpostImage" type="file" id="blogpostImage" accept="image/*">
+            <div class="form-label-group">
+                {{!-- Use multer for handeling images --}}
+                {{!-- <input name="blogpostImage" type="file" id="blogpostImage" accept="image/*"> --}}
             </div>
-            <br> --}}
+            <br>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Post</button>
         </form>
     </div>

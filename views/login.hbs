@@ -6,14 +6,15 @@
         <p>You're already logged in</p>
     {{else}}
         <div class="container-fluid jumbotron text-center col-md-5">
-            <form class="form-signin" method="POST">
-                {{#if somethingWentWrong}}
+            <form class="form-signin" method="POST" action="/login">
+                {{#if loginErrors.length}}
                     <ul class="list-group list-group-flush my-5">
-                        {{#each validationErrors}}
+                        {{#each loginErrors}}
                             <li class="list-group-item text-danger bg-light">{{this}}</li>
                         {{/each}}
                     </ul>
                 {{/if}}
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
                 <div class="text-center mb-4">
                     <h1 class="h3 mb-3 font-weight-normal">Admin Login</h1>
                 </div>

@@ -3,6 +3,7 @@
         <thead>
             <tr>
             <th scope="col">Title</th>
+            <th scope="col">Edit</th>
             <th scope="col">Delete</th>
             </tr>
         </thead>
@@ -11,8 +12,10 @@
                 {{#each projects}}
                     <tr>
                         <td>{{name}}</td>
+                        <td><a href="/portfolio/{{id}}/edit"><button class="btn btn-secondary">Edit</button></a></td>
                         <td>
                             <form method="POST" action="/portfolio/{{id}}/delete">
+                                <input type="hidden" name="_csrf" value="{{csrfToken}}">
                                 <button class="btn btn-danger" type="submit">Delete</button>
                             </form>
                         </td>

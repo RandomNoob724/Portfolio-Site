@@ -40,6 +40,13 @@
               <div class="media-body">
                 <h5 class="mt-0">{{commentPublisher}}</h5>
                 <p>{{commentText}}</p>
+                {{#if ../isLoggedIn}}
+                  <form method="POST" action="/comment/{{commentID}}/delete">
+                    <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+                    <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
+                    <button class="btn btn-danger" type="submit">Delete</button>
+                  </form>
+                {{/if}}
               </div>
             </div>
           {{/each}}
@@ -50,6 +57,7 @@
           <div class="card-body">
             <form class="form" action="/comment/{{blogpost.blogpostID}}/publish-comment" method="POST">
               <div class="form-group">
+                <input type="hidden" name="_csrf" value="{{csrfToken}}">
                 <p>No inputed name makes your comment Anonymous</p>
                 <input class="form-control" type="text" name="commenterName" placeholder="Input your name here">
                 <textarea class="form-control mt-3" rows="3" name="commentMainText" placeholder="Input comment text here"></textarea>

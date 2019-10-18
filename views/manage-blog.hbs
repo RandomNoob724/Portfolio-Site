@@ -15,6 +15,7 @@
                         <td><a class="text-light" href="/blog/post/{{blogpostID}}/edit"><button class="btn btn-secondary">Edit</button></a></td>
                         <td>
                             <form method="POST" action="/blog/post/{{blogpostID}}/delete-post">
+                                <input type="hidden" name="_csrf" value="{{csrfToken}}">
                                 <button class="btn btn-danger" type="submit">Delete</button>
                             </form>
                         </td>

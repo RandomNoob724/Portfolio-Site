@@ -46,7 +46,35 @@ router.post('/:id/delete', function(request, response){
         if(error){
             //Do something
         } else {
-            response.redirect('/admin/manage-projects')
+            response.redirect('/admin/manage/projects')
+        }
+    })
+})
+
+router.get('/:id/edit', function(request, response){
+    const id = request.params.id
+    db.getProjectWithId(id, function(error, project){
+        if(error){
+            console.log(error)
+        } else {
+            const model = {
+                project
+            }
+            response.render('edit-project.hbs', model)
+        }
+    })
+})
+
+router.post('/:id/edit', function(request, response){
+    const id = request.params.id
+    const title = request.body.projectName
+    const description = request.body.projectDescription
+    const link = request.body.projectLink
+    db.updateProjectWithId(title, description, link, id, function(error){
+        if(error){
+            console.log(error)
+        } else {
+            response.redirect('/admin/manage/projects')
         }
     })
 })

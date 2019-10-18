@@ -8,7 +8,7 @@ const db = require('./db')
 
 const router = express.Router()
 
-const upload = multer({dest: 'public/uploads/'})
+const upload = multer({ dest: 'public/uploads/' })
 
 router.use(express.static("public"))
 
@@ -65,7 +65,7 @@ router.post('/create', function (request, response) {
       if (error) {
         console.log("Internal server error...")
       } else {
-        response.redirect('/blog/1')
+        response.redirect('/blog')
       }
     })
   } else {
@@ -78,7 +78,7 @@ router.post('/create', function (request, response) {
   }
 })
 
-router.get('/search', function(request, response){
+router.get('/search', function (request, response) {
   let keyWord = request.query.inputedSearch
   let dateFrom = new Date(request.query.dateFrom)
   let dateTo = new Date(request.query.dateTo)
@@ -88,11 +88,11 @@ router.get('/search', function(request, response){
   const validationErrors = []
 
   // If you've not entered a date or a keyword you should not be able to search
-  if(keyWord == "" && Number.isNaN(dateFrom) == true && Number.isNaN(dateTo) == true) {
+  if (keyWord == "" && Number.isNaN(dateFrom) == true && Number.isNaN(dateTo) == true) {
     console.log("Error");
     validationErrors.push("Can't search for empty string")
-    db.getAllBlogPosts(function(error, blogposts){
-      if(error){
+    db.getAllBlogPosts(function (error, blogposts) {
+      if (error) {
         console.log(error)
       } else {
         const model = {
@@ -102,9 +102,9 @@ router.get('/search', function(request, response){
         response.render("blog.hbs", model)
       }
     })
-  } else if(Number.isNaN(dateFrom) && Number.isNaN(dateTo)){ //Here we're searching with keyword
-    db.searchBlogPostWithKeyword(keyWord, function(error, blogposts){
-      if(error){
+  } else if (Number.isNaN(dateFrom) && Number.isNaN(dateTo)) { //Here we're searching with keyword
+    db.searchBlogPostWithKeyword(keyWord, function (error, blogposts) {
+      if (error) {
         console.log(error)
       } else {
         const model = {
@@ -113,9 +113,9 @@ router.get('/search', function(request, response){
         response.render("blog.hbs", model)
       }
     })
-  } else if(keyWord == "" && Number.isNaN(dateFrom) == false && Number.isNaN(dateTo) == false){ //Here we're searching with date
-    db.searchBlogPostWithDate(dateFrom, dateTo, function(error, blogposts){
-      if(error){
+  } else if (keyWord == "" && Number.isNaN(dateFrom) == false && Number.isNaN(dateTo) == false) { //Here we're searching with date
+    db.searchBlogPostWithDate(dateFrom, dateTo, function (error, blogposts) {
+      if (error) {
         console.log(error)
       } else {
         const model = {
@@ -125,8 +125,8 @@ router.get('/search', function(request, response){
       }
     })
   } else {
-    db.searchBlogPost(keyWord, dateFrom, dateTo, function(error, blogposts){
-      if(error){
+    db.searchBlogPost(keyWord, dateFrom, dateTo, function (error, blogposts) {
+      if (error) {
         console.log(error)
       } else {
         const model = {
@@ -139,30 +139,48 @@ router.get('/search', function(request, response){
 })
 
 // pagination
-router.get('/:id', function(request, response){
+router.get('/:id', function (request, response) {
   const pageNumber = request.params.id
   let postsPerPage = 3
-  let startIndex = (pageNumber - 1) * postsPerPage
-  let endIndex = Math.min(startIndex + postsPerPage, pageNumber * postsPerPage)
 
-  db.getBlogPostWithinLimit(postsPerPage, endIndex, function(error, blogposts){
-    previousPage =  parseInt(pageNumber) - 1
-    nextPage = parseInt(pageNumber) + 1
-    if(error){
+  // let startIndex = (currentPage - 1) * pageSize;
+  // let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
+  db.getAmountOfPosts(function(error, amount) {
+    let amountOfPosts = parseInt(amount.nrOfRows)
+    
+    let startIndex = (pageNumber - 1) * postsPerPage
+    let endIndex = Math.min(startIndex + postsPerPage - 1, amountOfPosts - 1)
+    if (error) {
       console.log(error)
     } else {
-      if(pageNumber == 1){
-        previousPage = 1
-        disabledNext = true
-      }
-      const model = {
-        previousPage,
-        nextPage,
-        blogpost: blogposts
-      }
-      console.log(endIndex)
-      console.log(blogposts)
-      response.render("blog.hbs", model)
+      db.getBlogPostWithinLimit(postsPerPage, endIndex, function (error, blogposts) {
+        previousPage = parseInt(pageNumber) - 1
+        nextPage = parseInt(pageNumber) + 1
+        let disabledNext = false
+        let disabledPrevious = false
+        if (error) {
+          console.log(error)
+          response.render("error500.hbs")
+        } else {
+          if (pageNumber == 1) {
+            previousPage = 1
+            disabledNext = true
+          }
+          if(postsPerPage*pageNumber >= amountOfPosts){
+            nextPage = pageNumber
+            disabledPrevious = true
+          }
+          const model = {
+            previousPage,
+            nextPage,
+            disabledNext,
+            disabledPrevious,
+            disabled: "disabled",
+            blogpost: blogposts
+          }
+          response.render("blog.hbs", model)
+        }
+      })
     }
   })
 })
@@ -182,6 +200,7 @@ router.get('/post/:id', function (request, response) {
         }
         if (error) {
           console.log(error)
+          response.redirect('/error500')
         }
         if (blogpost == null) {
           validationErrors.push("There are no posts with this id")
@@ -200,7 +219,8 @@ router.get('/post/:id/edit', function (request, response) {
   db.getBlogPostById(blogpostID, function (error, blogpost) {
     if (error) {
       console.log("Something went wrong when getting blogpost from the database")
-    } else if(request.session.isLoggedIn != true) {
+      response.status(500).render("error500.hbs")
+    } else if (request.session.isLoggedIn != true) {
       validationErrors.push("You have to log in to access this part of the website")
       const model = {
         notLoggedIn: true,
@@ -208,11 +228,18 @@ router.get('/post/:id/edit', function (request, response) {
       }
       response.render("blog.hbs", model)
     } else {
-      const model = {
-        validationErrors,
-        blogpost
-      }
-      response.render("edit.hbs", model)
+      db.getAllCommentsOnPost(blogpostID, function(error, comments){
+        if(error){
+          response.status(500).render("error500.hbs")
+        } else {
+          const model = {
+            validationErrors,
+            comments,
+            blogpost
+          }
+          response.render("edit-blogpost.hbs", model)
+        }
+      })
     }
   })
 })
@@ -228,7 +255,7 @@ router.post('/post/:id/edit', function (request, response) {
       }
       response.render("blog.hbs", model)
     } else {
-      response.redirect('/blog/' + blogpostID)
+      response.redirect('/blog/post/' + blogpostID)
     }
   })
 })
@@ -252,7 +279,7 @@ router.post('/post/:id/delete-post', function (request, response) {
           }
           response.render("blog.hbs", model)
         } else {
-          response.redirect('/admin/manage-blog')
+          response.redirect('/admin/manage/blog')
         }
       })
     }

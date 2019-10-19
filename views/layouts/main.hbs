@@ -36,36 +36,36 @@
           <a class="nav-link" href="/blog">Blog</a>
         </li>
         {{#if isLoggedIn}}
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/admin">Admin Panel</a>
-          </li>
-      {{/if}}
+        <li class="nav-item">
+          <a class="nav-link" href="/logout">Logout</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">Admin Panel</a>
+        </li>
+        {{/if}}
       </ul>
     </div>
   </nav>
   {{#if validationErrors.length}}
-    <ul class="list-group text-center">
-      {{#each validationErrors}}
-        <li class="list-group-item text-danger">{{this}}</li>
-      {{/each}}
-    </ul>
-  {{else}}
+  <ul class="list-group text-center">
+    {{#each validationErrors}}
+      <li class="list-group-item text-danger">{{this}}</li>
+    {{/each}}
+  </ul>
+  {{/if}}
   <div class="pb-5">
     {{{body}}}
   </div>
-  {{/if}}
   <footer class="footer text-center bg-dark text-light fixed-bottom pt-5" id="main-footer">
     <div class="navbar fixed-bottom bg-dark text-light">
       <p>&copy; Emil Persson 2019</p>
       {{#if isLoggedIn}}
-        <a class="nav-link" href="/logout">Log out</a>
+      <a class="nav-link" href="/logout">Log out</a>
       {{else}}
-        <a class="nav-link" href="/login">Login</a>
+      <a class="nav-link" href="/login">Login</a>
       {{/if}}
     </div>
   </footer>
 </body>
+
 </html>

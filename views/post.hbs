@@ -1,72 +1,79 @@
 <head>
-    <link rel="stylesheet" href="blogpost.css">
+  <link rel="stylesheet" href="blogpost.css">
 </head>
 <div class="container">
   <div class="row">
-      <!-- Post Content Column -->
-      <div class="col-lg-12">
-        <!-- Title -->
-        <h1 class="mt-4">{{blogpost.blogpostHeader}}</h1>
-        <!-- Author -->
-        <p class="lead">
-          by
-          <a href="#">Emil Persson</a>
-        </p>
-        <hr>
-        <!-- Date/Time -->
-        <p>Posted on {{blogpost.blogpostDate}}</p>
-        <hr>
-        <!-- Preview Image -->
-        {{!-- <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
+    <!-- Post Content Column -->
+    <div class="col-lg-12">
+      <!-- Title -->
+      <h1 class="mt-4">{{blogpost.blogpostHeader}}</h1>
+      <!-- Author -->
+      <p class="lead">
+        by
+        <a href="#">Emil Persson</a>
+      </p>
+      <hr>
+      <!-- Date/Time -->
+      <p>Posted on {{blogpost.blogpostDate}}</p>
+      <hr>
+      <!-- Preview Image -->
+      {{!-- <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
         <hr> --}}
-        <!-- Post Content -->
-        <div class="font-weight-light" style="font-size: 115%;">
-          {{{blogpost.blogpostText}}}
+      <!-- Post Content -->
+      <div class="font-weight-light">
+        {{{blogpost.blogpostText}}}
+      </div>
+      <hr>
+
+      {{#if commentError.length}}
+      {{#each commentError}}
+      <p>{{this}}</p>
+      {{/each}}
+      {{/if}}
+
+      <h3>Comments</h3>
+      {{#if comments.length}}
+      {{#each comments}}
+      <!-- Single Comment -->
+      <div class="media mb-4">
+        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+        <div class="media-body">
+          <h5 class="mt-0">{{commentPublisher}}</h5>
+          <p>{{commentText}}</p>
         </div>
-        <hr>
-
-        {{#if validationErrors.length}}
-          {{#each validationErrors}}
-            <p>{{this}}</p>
-          {{/each}}
+        {{#if ../isLoggedIn}}
+        <form method="GET" action="/comment/{{commentID}}/edit">
+          <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+          <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
+          <button class="btn btn-secondary mr-2" type="submit">Edit</button>
+        </form>
+        <form method="POST" action="/comment/{{commentID}}/delete">
+          <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+          <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
+          <button class="btn btn-danger" type="submit">Delete</button>
+        </form>
         {{/if}}
-
-        <h3>Comments</h3>
-        {{#if comments.length}}
-          {{#each comments}}
-            <!-- Single Comment -->
-            <div class="media mb-4">
-              <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-              <div class="media-body">
-                <h5 class="mt-0">{{commentPublisher}}</h5>
-                <p>{{commentText}}</p>
-                {{#if ../isLoggedIn}}
-                  <form method="POST" action="/comment/{{commentID}}/delete">
-                    <input type="hidden" name="_csrf" value="{{../csrfToken}}">
-                    <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
-                    <button class="btn btn-danger" type="submit">Delete</button>
-                  </form>
-                {{/if}}
-              </div>
+      </div>
+      {{/each}}
+      {{/if}}
+      <!-- Comments Form -->
+      <div class="card my-4">
+        <h5 class="card-header">Leave a Comment:</h5>
+        <div class="card-body">
+          <form class="form" action="/blog/post/{{blogpost.blogpostID}}" method="POST">
+            <div class="form-group">
+              <input type="hidden" name="_csrf" value="{{csrfToken}}">
+              <p>No inputed name makes your comment Anonymous</p>
+              <input class="form-control" type="text" name="commenterName" placeholder="Input your name here"
+                value="{{commenterName}}">
+              <textarea class="form-control mt-3" rows="3" name="commentMainText"
+                placeholder="Input comment text here"></textarea>
             </div>
-          {{/each}}
-        {{/if}}
-        <!-- Comments Form -->
-        <div class="card my-4">
-          <h5 class="card-header">Leave a Comment:</h5>
-          <div class="card-body">
-            <form class="form" action="/comment/{{blogpost.blogpostID}}/publish-comment" method="POST">
-              <div class="form-group">
-                <input type="hidden" name="_csrf" value="{{csrfToken}}">
-                <p>No inputed name makes your comment Anonymous</p>
-                <input class="form-control" type="text" name="commenterName" placeholder="Input your name here">
-                <textarea class="form-control mt-3" rows="3" name="commentMainText" placeholder="Input comment text here"></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-          </div>
-        </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
         </div>
       </div>
     </div>
+  </div>
+</div>
 </div>

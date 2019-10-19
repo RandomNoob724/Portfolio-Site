@@ -157,6 +157,24 @@ exports.deleteAllCommentWithId = function (blogpostID, callback) {
     })
 }
 
+exports.getCommentWithId = function(commentID, callback){
+    const query = "SELECT * FROM comment WHERE commentID = ?"
+    const values = [commentID]
+
+    db.get(query, values, function(error, comment){
+        callback(error, comment)
+    })
+}
+
+exports.updateCommentWithId = function(updatedCommentPublisher, updatedCommentText, commentID, callback){
+    const query = "UPDATE comment SET commentPublisher = ?, commentText = ? WHERE commentID = ?"
+    const values = [updatedCommentPublisher, updatedCommentText, commentID]
+
+    db.run(query, values, function(error, comment){
+        callback(error, comment)
+    })
+}
+
 exports.createComment = function (commenterName, commentMainText, blogpostID, callback) {
     const query = "INSERT INTO comment (commentPublisher, commentText, blogpostID) VALUES (?,?,?)"
     const values = [commenterName, commentMainText, blogpostID]

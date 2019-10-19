@@ -147,22 +147,8 @@ app.get('/logout', function (request, response) {
   response.redirect("/")
 })
 
-app.get('/error', function (request, response, next) {
-  const statusError = []
-  const funnyErrorPicture = ""
-  if (response.status(500)) {
-    statusError.push("Internal Server Error, We're sorry for this and trying to fix it as soon as possible")
-    const model = {
-      statusError
-    }
-    response.render("error.hbs", model)
-  } else if (response.status(404)) {
-    statusError.push("Page not found")
-    const model = {
-      statusError
-    }
-    response.render("error.hbs", model)
-  }
+app.get('*', function(request, response){
+  response.status(404).render("404.hbs")
 })
 
 app.listen(8080, () => {

@@ -1,3 +1,4 @@
+//node packages
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const expressSession = require('express-session')
@@ -15,9 +16,7 @@ const adminRouter = require('./adminRouter')
 
 const app = express()
 
-const saltRounds = 10
-
-// Now using hashed password instead of using a password in plain text
+//login
 const username = "RandomAdmin"
 const hash = "$2b$10$0TBKM124B6LVd0km6RQ28e1kbgV3BhvkmLBYBEAzivfAUJevLHQwK"
 
@@ -47,11 +46,18 @@ app.use(function (request, response, next) {
   next()
 })
 
+app.use(function(error, request, response, next){
+  if(error.code === 'EBADCSRFTOKEN'){
+    response.status(403).render("error403.hbs")
+  } else {
+    next()
+  }
+})
+
 app.use('/blog', blogRouter)
 
 app.use('/portfolio', portfolioRouter)
 
-//Unclear if this is a resource that is supposed to be used as a router
 app.use('/comment', commentRouter)
 
 app.use('/admin', adminRouter)
@@ -71,25 +77,6 @@ app.get('/about', function (request, response) {
 app.get('/contact', function (request, response) {
   response.render('contact.hbs')
 })
-
-// app.get('/admin/manage/comments', function(request, response){
-//   const validationErrors = []
-//   if(request.session.isLoggedIn == false){
-//     validationErrors.push("You have to be logged in to access this part of the website")
-//     const model = {
-//       validationErrors
-//     }
-//     response.redirect()
-//   } else {
-//     db.getAllBlogPosts(function(error, blogposts){
-//       if(error){
-//         console.log(error)
-//       } else {
-        
-//       }
-//     })
-//   }
-// })
 
 app.get('/login', function (request, response) {
   const alreadyLoggedIn = "You are already logged in"
@@ -117,7 +104,6 @@ app.post('/login', csrfProtection, function (request, response) {
       response.render("login.hbs", model)
     }
 
-    // Check if input is correct or not and push validationErrors to the validation error array
     if (inputedUsername != username) {
       loginErrors.push("Username does not match existing username")
     }

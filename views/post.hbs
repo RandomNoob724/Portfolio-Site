@@ -16,9 +16,6 @@
       <!-- Date/Time -->
       <p>Posted on {{blogpost.blogpostDate}}</p>
       <hr>
-      <!-- Preview Image -->
-      {{!-- <img class="img-fluid rounded" src="http://placehold.it/900x300" alt="">
-        <hr> --}}
       <!-- Post Content -->
       <div class="font-weight-light">
         {{{blogpost.blogpostText}}}
@@ -26,35 +23,34 @@
       <hr>
 
       {{#if commentError.length}}
-      {{#each commentError}}
-      <p>{{this}}</p>
-      {{/each}}
+        {{#each commentError}}
+          <p>{{this}}</p>
+        {{/each}}
       {{/if}}
 
       <h3>Comments</h3>
       {{#if comments.length}}
-      {{#each comments}}
-      <!-- Single Comment -->
-      <div class="media mb-4">
-        <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
-        <div class="media-body">
-          <h5 class="mt-0">{{commentPublisher}}</h5>
-          <p>{{commentText}}</p>
+        {{#each comments}}
+          <div class="media mb-4">
+            <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+            <div class="media-body">
+              <h5 class="mt-0">{{commentPublisher}}</h5>
+              <p>{{commentText}}</p>
+            </div>
+          {{#if ../isLoggedIn}}
+            <form method="GET" action="/comment/{{commentID}}/edit">
+              <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+              <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
+              <button class="btn btn-secondary mr-2" type="submit">Edit</button>
+            </form>
+            <form method="POST" action="/comment/{{commentID}}/delete">
+              <input type="hidden" name="_csrf" value="{{../csrfToken}}">
+              <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
+              <button class="btn btn-danger" type="submit">Delete</button>
+            </form>
+          {{/if}}
         </div>
-        {{#if ../isLoggedIn}}
-        <form method="GET" action="/comment/{{commentID}}/edit">
-          <input type="hidden" name="_csrf" value="{{../csrfToken}}">
-          <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
-          <button class="btn btn-secondary mr-2" type="submit">Edit</button>
-        </form>
-        <form method="POST" action="/comment/{{commentID}}/delete">
-          <input type="hidden" name="_csrf" value="{{../csrfToken}}">
-          <input type="hidden" name="blogpostID" value="{{../blogpost.blogpostID}}">
-          <button class="btn btn-danger" type="submit">Delete</button>
-        </form>
-        {{/if}}
-      </div>
-      {{/each}}
+        {{/each}}
       {{/if}}
       <!-- Comments Form -->
       <div class="card my-4">
@@ -65,9 +61,9 @@
               <input type="hidden" name="_csrf" value="{{csrfToken}}">
               <p>No inputed name makes your comment Anonymous</p>
               <input class="form-control" type="text" name="commenterName" placeholder="Input your name here"
-                value="{{commenterName}}">
+                value="{{commenterName}}" maxlength="20">
               <textarea class="form-control mt-3" rows="3" name="commentMainText"
-                placeholder="Input comment text here"></textarea>
+                placeholder="Input comment text here" maxlength="100"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
           </form>

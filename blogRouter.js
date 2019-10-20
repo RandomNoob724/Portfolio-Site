@@ -45,16 +45,24 @@ router.post('/create', function (request, response) {
   const postText = request.body.blogpostText
   const postDate = date.toDateString()
   const timestamp = date.getTime()
+  const maxCommentPublisherLength = 20
+  const maxCommentTextLength = 100
 
   const validationErrors = []
   if (postHeader.trim() == "") {
     validationErrors.push("Must enter a Header for the post")
+  } 
+  if(postHeader.trim() == maxCommentPublisherLength){
+    validationErrors.push("Name is maximum 20 characters")
   }
 
   if (postText.trim() == "") {
     validationErrors.push("Mush enter a post body text")
+  } 
+  if(postText.trim() > maxCommentTextLength){
+    validationErrors.push("Comment is too long, maximum 100 characters")
   }
-
+  
   if (validationErrors.length > 0) {
     const model = {
       validationErrors,

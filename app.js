@@ -13,15 +13,13 @@ const portfolioRouter = require('./portfolioRouter')
 const commentRouter = require('./commentRounter')
 const adminRouter = require('./adminRouter')
 
-const db = require('./db')
-
 const app = express()
 
 const saltRounds = 10
 
 // Now using hashed password instead of using a password in plain text
 const username = "RandomAdmin"
-const hash = "$2b$10$b1tuiPuE98ROC7Bj4je6fOZOIO1Vehhe5mPoK1KWfGNkuaUGb./86"
+const hash = "$2b$10$0TBKM124B6LVd0km6RQ28e1kbgV3BhvkmLBYBEAzivfAUJevLHQwK"
 
 const csrfProtection = csurf({ cookie: true })
 

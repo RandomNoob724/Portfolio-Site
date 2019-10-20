@@ -99,7 +99,7 @@ exports.getAmountOfPosts = function(callback){
 }
 
 exports.getBlogPostWithinLimit = function(limit, offset, callback){
-    const query = "SELECT * FROM blogpost ORDER BY blogpostID DESC LIMIT ? OFFSET ? "
+    const query = "SELECT * FROM blogpost ORDER BY blogpostID DESC LIMIT ? OFFSET ?"
     const values = [limit, offset]
 
     db.all(query, values, function(error, blogposts){
@@ -135,7 +135,7 @@ exports.deleteBlogPost = function (postID, callback) {
 }
 
 exports.searchBlogPostWithKeyword = function(search, callback){
-    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ? OR blogpostHeader LIKE ?) ORDER BY blogpostID DESC"
+    const query = "SELECT * FROM blogpost WHERE (blogpostText LIKE ? OR blogpostHeader LIKE ?) "
     const values = ['%'+search+'%', '%'+search+'%']
 
     db.all(query, values, function(error, blogposts){

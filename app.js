@@ -48,7 +48,7 @@ app.use(function (request, response, next) {
 
 app.use(function(error, request, response, next){
   if(error.code === 'EBADCSRFTOKEN'){
-    response.status(403).render("error403.hbs")
+    response.status(403).render('error403.hbs')
   } else {
     next()
   }
@@ -67,11 +67,11 @@ app.engine("hbs", expressHandlebars({
 }))
 
 app.get('/', function (request, response) {
-  response.render("home.hbs")
+  response.render('home.hbs')
 })
 
 app.get('/about', function (request, response) {
-  response.render("about.hbs")
+  response.render('about.hbs')
 })
 
 app.get('/contact', function (request, response) {
@@ -101,7 +101,7 @@ app.post('/login', csrfProtection, function (request, response) {
         somethingWentWrong: true,
         username: inputedUsername
       }
-      response.render("login.hbs", model)
+      response.render('login.hbs', model)
     }
 
     if (inputedUsername != username) {
@@ -114,25 +114,25 @@ app.post('/login', csrfProtection, function (request, response) {
 
     if (inputedUsername == username && passwordMatch) {
       request.session.isLoggedIn = true
-      response.redirect("/")
+      response.redirect('/')
     } else {
       const model = {
         somethingWentWrong: true,
         loginErrors,
         username: inputedUsername
       }
-      response.render("login.hbs", model)
+      response.render('login.hbs', model)
     }
   })
 })
 
-app.get('/logout', function (request, response) {
+app.post('/logout', function (request, response) {
   request.session.isLoggedIn = false
-  response.redirect("/")
+  response.redirect('/')
 })
 
 app.get('*', function(request, response){
-  response.status(404).render("error404.hbs")
+  response.status(404).render('error404.hbs')
 })
 
 app.listen(8080, () => {

@@ -6,7 +6,7 @@
         <div class="col-md-12 align-items-md-center">
             <h1 class="my-4 text-center">Blog Posts</h1>
             <form class="form-inline my-2 my-lg-0" action="/blog/search" method="GET">
-                <input class="form-control mr-sm-2" name="inputedSearch" type="search" placeholder="Search" aria-label="Search">
+                <input class="form-control mr-sm-2" name="inputedSearch" type="search" placeholder="Search" aria-label="Search" value="{{keyWord}}">
                 <label class="mr-2 ml-2">Posts From: </label><input class="form-control" name="dateFrom" type="date" value="{{startDate}}">
                 <label class="mr-2 ml-2">Posts before: </label><input class="form-control" name="dateTo" type="date" value="{{todaysDate}}">
                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>

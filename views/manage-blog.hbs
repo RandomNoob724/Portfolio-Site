@@ -1,33 +1,31 @@
 <div class="container-fluid">
+    <h1>Manage Blogposts</h1>
     <table class="table table-striped col-md" id="project-table">
-        {{#if validationErrors.length}}
-            
-        {{else}}
-            <thead>
-                <tr>
+        <thead>
+            <tr>
                 <th scope="col">Title</th>
                 <th scope="col">Edit</th>
                 <th scope="col">Delete</th>
-                </tr>
-            </thead>
-            <tbody>
+            </tr>
+        </thead>
+        <tbody>
             {{#if blogposts.length}}
                 {{#each blogposts}}
                     <tr>
                         <td>{{blogpostHeader}}</td>
-                        <td><a class="text-light" href="/blog/post/{{blogpostID}}/edit"><button class="btn btn-secondary">Edit</button></a></td>
+                        <td><a class="text-light" href="/blog/post/{{blogpostID}}/edit"><button
+                                    class="btn btn-secondary">Edit</button></a></td>
                         <td>
                             <form method="POST" action="/blog/post/{{blogpostID}}/delete-post">
-                                <input type="hidden" name="_csrf" value="{{csrfToken}}">
+                                <input type="hidden" name="_csrf" value="{{../csrfToken}}">
                                 <button class="btn btn-danger" type="submit">Delete</button>
                             </form>
                         </td>
                     </tr>
                 {{/each}}
-            {{else}}
+                {{else}}
                 <td>No post found</td>
             {{/if}}
-        {{/if}}
         </tbody>
     </table>
 </div>

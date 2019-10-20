@@ -33,7 +33,7 @@ router.get('/create', function (request, response) {
     const model = {
       validationErrors
     }
-    response.render("home.hbs", model)
+    response.render('home.hbs', model)
   } else {
     response.render('create-post.hbs')
   }
@@ -45,36 +45,28 @@ router.post('/create', function (request, response) {
   const postText = request.body.blogpostText
   const postDate = date.toDateString()
   const timestamp = date.getTime()
-  const maxCommentPublisherLength = 20
-  const maxCommentTextLength = 100
 
   const validationErrors = []
   if (postHeader.trim() == "") {
     validationErrors.push("Must enter a Header for the post")
-  } 
-  if(postHeader.trim() == maxCommentPublisherLength){
-    validationErrors.push("Name is maximum 20 characters")
   }
 
   if (postText.trim() == "") {
     validationErrors.push("Mush enter a post body text")
-  } 
-  if(postText.trim() > maxCommentTextLength){
-    validationErrors.push("Comment is too long, maximum 100 characters")
   }
-  
+
   if (validationErrors.length > 0) {
     const model = {
       validationErrors,
-      blogpostHeader,
-      blogpostText
+      postHeader,
+      postText
     }
-    response.render("create-post.hbs", model)
+    response.render('create-post.hbs', model)
   } else {
     db.createNewBlogPost(postHeader, postText, postDate, timestamp, function (error) {
       if (error) {
         console.log(error)
-        response.status(500).render("error500.hbs")
+        response.status(500).render('error500.hbs')
       } else {
         response.redirect('/blog')
       }
@@ -86,22 +78,30 @@ router.post('/post/:id', function (request, response) {
   const id = request.params.id
   let commentPublisher = request.body.commenterName
   const commentText = request.body.commentMainText
+  const maxCommentPublisherLength = 20
+  const maxCommentTextLength = 100
   const commentError = []
 
   if (commentPublisher.trim() == "") {
     commentPublisher = "Anonymous"
-  } else if (commentPublisher.length > 20){
+  }
+
+  if (commentPublisher.length > maxCommentPublisherLength) {
     commentError.push("Name is too long")
   }
+
   if (commentText.trim() == "") {
     commentError.push("You're not allowed to have empty comments")
-  } else if (commentText.length > 200){
+  }
+
+  if (commentText.length > maxCommentTextLength) {
     commentError.push("Comments can't be over 200 characters")
   }
+  
   if (commentError.length > 0) {
     db.getBlogPostById(id, function (error, blogpost) {
       if (error) {
-        response.status(500).render("error500.hbs")
+        response.status(500).render('error500.hbs')
         console.log(error)
       } else {
         db.getAllCommentsOnPost(id, function (error, comments) {
@@ -113,13 +113,13 @@ router.post('/post/:id', function (request, response) {
           }
           if (error) {
             console.log(error)
-            response.status(500).render("error500.hbs")
+            response.status(500).render('error500.hbs')
           }
           if (blogpost == null) {
             commentError.push("There are no posts with this id")
-            response.render("blog.hbs", model)
+            response.render('blog.hbs', model)
           } else {
-            response.render("post.hbs", model)
+            response.render('post.hbs', model)
           }
         })
       }
@@ -128,7 +128,7 @@ router.post('/post/:id', function (request, response) {
     db.createComment(commentPublisher, commentText, id, function (error) {
       if (error) {
         console.log(error);
-        response.status(500).render("error500.hbs")
+        response.status(500).render('error500.hbs')
       }
       response.redirect('/blog/post/' + id)
     })
@@ -150,25 +150,27 @@ router.get('/search', function (request, response) {
     db.getAllBlogPosts(function (error, blogposts) {
       if (error) {
         console.log(error)
-        response.status(500).render("error500.hbs")
+        response.status(500).render('error500.hbs')
       } else {
         const model = {
           validationErrors,
+          keyWord,
           blogpost: blogposts
         }
-        response.render("blog.hbs", model)
+        response.render('blog.hbs', model)
       }
     })
-  } else if (Number.isNaN(dateFrom) && Number.isNaN(dateTo)) { //Here we're searching with keyword
+  } else if (Number.isNaN(dateFrom) && Number.isNaN(dateTo)) {
     db.searchBlogPostWithKeyword(keyWord, function (error, blogposts) {
       if (error) {
         console.log(error)
-        response.status(500).render("error500.hbs")
+        response.status(500).render('error500.hbs')
       } else {
         const model = {
-          blogpost: blogposts
+          blogpost: blogposts,
+          keyWord
         }
-        response.render("blog.hbs", model)
+        response.render('blog.hbs', model)
       }
     })
   } else if (keyWord.trim() == "" && Number.isNaN(dateFrom) == false && Number.isNaN(dateTo) == false) { //Here we're searching with date
@@ -177,9 +179,10 @@ router.get('/search', function (request, response) {
         console.log(error)
       } else {
         const model = {
-          blogpost: blogposts
+          blogpost: blogposts,
+          keyWord
         }
-        response.render("blog.hbs", model)
+        response.render('blog.hbs', model)
       }
     })
   } else {
@@ -190,7 +193,7 @@ router.get('/search', function (request, response) {
         const model = {
           blogpost: blogposts
         }
-        response.render("blog.hbs", model)
+        response.render('blog.hbs', model)
       }
     })
   }
@@ -198,34 +201,40 @@ router.get('/search', function (request, response) {
 
 // pagination
 router.get('/:id', function (request, response) {
-  const pageNumber = request.params.id
+  const currentPageNumber = request.params.id
   let postsPerPage = 3
+  const startPage = 1
 
-  // let startIndex = (currentPage - 1) * pageSize;
-  // let endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1);
   db.getAmountOfPosts(function (error, amount) {
-    let amountOfPosts = parseInt(amount.nrOfRows)
+    let totalAmountOfPosts = parseInt(amount.nrOfRows)
+    console.log(totalAmountOfPosts);
+    
 
-    let startIndex = (pageNumber - 1) * postsPerPage
-    let endIndex = Math.min(startIndex + postsPerPage - 1, amountOfPosts - 1)
+    let startIndex = ((currentPageNumber - 1) * postsPerPage)
+    let endIndex = Math.min(startIndex + postsPerPage - 1, totalAmountOfPosts - 1)
+    console.log(startIndex);
+    console.log(endIndex);
+
+
     if (error) {
       console.log(error)
+      response.status(500).render('error500.hbs')
     } else {
       db.getBlogPostWithinLimit(postsPerPage, endIndex, function (error, blogposts) {
-        previousPage = parseInt(pageNumber) - 1
-        nextPage = parseInt(pageNumber) + 1
+        previousPage = parseInt(currentPageNumber) - 1
+        nextPage = parseInt(currentPageNumber) + 1
         let disabledNext = false
         let disabledPrevious = false
         if (error) {
           console.log(error)
-          response.status(500).render("error500.hbs")
+          response.status(500).render('error500.hbs')
         } else {
-          if (pageNumber == 1) {
-            previousPage = 1
+          if (currentPageNumber == startPage) {
+            previousPage = startPage
             disabledNext = true
           }
-          if (postsPerPage * pageNumber >= amountOfPosts) {
-            nextPage = pageNumber
+          if (postsPerPage * currentPageNumber >= totalAmountOfPosts) {
+            nextPage = currentPageNumber
             disabledPrevious = true
           }
           const model = {
@@ -236,7 +245,9 @@ router.get('/:id', function (request, response) {
             disabled: "disabled",
             blogpost: blogposts
           }
-          response.render("blog.hbs", model)
+          console.log(model.blogpost);
+          
+          response.render('blog.hbs', model)
         }
       })
     }
@@ -248,7 +259,7 @@ router.get('/post/:id', function (request, response) {
   const validationErrors = []
   db.getBlogPostById(id, function (error, blogpost) {
     if (error) {
-      response.status(500).render("error500.hbs")
+      response.status(500).render('error500.hbs')
       console.log(error)
     } else {
       db.getAllCommentsOnPost(id, function (error, comments) {
@@ -263,9 +274,9 @@ router.get('/post/:id', function (request, response) {
         }
         if (blogpost == null) {
           validationErrors.push("There are no posts with this id")
-          response.render("blog.hbs", model)
+          response.render('blog.hbs', model)
         } else {
-          response.render("post.hbs", model)
+          response.render('post.hbs', model)
         }
       })
     }
@@ -285,18 +296,18 @@ router.get('/post/:id/edit', function (request, response) {
         notLoggedIn: true,
         validationErrors
       }
-      response.render("blog.hbs", model)
+      response.render('blog.hbs', model)
     } else {
       db.getAllCommentsOnPost(blogpostID, function (error, comments) {
         if (error) {
-          response.status(500).render("error500.hbs")
+          response.status(500).render('error500.hbs')
         } else {
           const model = {
             validationErrors,
             comments,
             blogpost
           }
-          response.render("edit-blogpost.hbs", model)
+          response.render('edit-blogpost.hbs', model)
         }
       })
     }
@@ -309,7 +320,7 @@ router.post('/post/:id/edit', function (request, response) {
   const blogpostText = request.body.blogpostText
   db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function (error) {
     if (error) {
-      response.status(500).render("500.hbs")
+      response.status(500).render('error500.hbs')
     } else {
       response.redirect('/blog/post/' + blogpostID)
     }
@@ -325,14 +336,14 @@ router.post('/post/:id/delete-post', function (request, response) {
       const model = {
         couldNotDeletePost: true
       }
-      response.render("blog.hbs", model)
+      response.render('blog.hbs', model)
     } else {
       db.deleteBlogPost(blogpostID, function (error) {
         if (error) {
           const model = {
             couldNotDeletePost: true
           }
-          response.render("blog.hbs", model)
+          response.render('blog.hbs', model)
         } else {
           response.redirect('/admin/manage/blog')
         }

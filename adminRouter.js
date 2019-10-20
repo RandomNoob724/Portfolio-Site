@@ -19,12 +19,12 @@ router.get('/manage/blog', function (request, response) {
         db.getAllBlogPosts(function (error, blogposts) {
             if (error) {
                 console.log(error)
-                response.status(500).render("error500.hbs")
+                response.status(500).render('error500.hbs')
             } else {
                 const model = {
                     blogposts
                 }
-                response.render("manage-blog.hbs", model)
+                response.render('manage-blog.hbs', model)
             }
         })
     }
@@ -37,12 +37,12 @@ router.get('/manage/projects', function (request, response) {
         db.getProjects(function (error, projects) {
             if (error) {
                 console.log(error)
-                response.render(500).render("error500.hbs")
+                response.render(500).render('error500.hbs')
             } else {
                 const model = {
                     projects
                 }
-                response.render("manage-portfolio.hbs", model)
+                response.render('manage-portfolio.hbs', model)
             }
         })
     }

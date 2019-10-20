@@ -9,11 +9,11 @@
             <br>
             <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div class="form-label-group">
-                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}">
+                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}" maxlength="50">
             </div>
             <br>
             <div class="form-label-group">
-                <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20">{{postText}}</textarea>
+                <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20" maxlength="500">{{postText}}</textarea>
             </div>
             <br>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Post</button>

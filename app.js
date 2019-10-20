@@ -11,7 +11,7 @@ const csurf = require('csurf')
 //routers
 const blogRouter = require('./blogRouter')
 const portfolioRouter = require('./portfolioRouter')
-const commentRouter = require('./commentRounter')
+const commentRouter = require('./commentRouter')
 const adminRouter = require('./adminRouter')
 
 const app = express()

@@ -45,14 +45,24 @@ router.post('/create', function (request, response) {
   const postText = request.body.blogpostText
   const postDate = date.toDateString()
   const timestamp = date.getTime()
+  const titleLimit = 50
+  const textLimit = 500
 
   const validationErrors = []
   if (postHeader.trim() == "") {
     validationErrors.push("Must enter a Header for the post")
   }
 
+  if(postHeader.trim() > titleLimit){
+    validationErrors.push("To0 many characters in title")
+  }
+
   if (postText.trim() == "") {
     validationErrors.push("Mush enter a post body text")
+  }
+
+  if(postText.trim() > textLimit){
+    validationErrors.push("Text limit is reached")
   }
 
   if (validationErrors.length > 0) {
@@ -203,24 +213,17 @@ router.get('/search', function (request, response) {
 router.get('/:id', function (request, response) {
   const currentPageNumber = request.params.id
   let postsPerPage = 3
-  const startPage = 1
+  const startPage = 0
 
   db.getAmountOfPosts(function (error, amount) {
     let totalAmountOfPosts = parseInt(amount.nrOfRows)
-    console.log(totalAmountOfPosts);
-    
-
-    let startIndex = ((currentPageNumber - 1) * postsPerPage)
-    let endIndex = Math.min(startIndex + postsPerPage - 1, totalAmountOfPosts - 1)
-    console.log(startIndex);
-    console.log(endIndex);
-
+    let offset = postsPerPage * currentPageNumber
 
     if (error) {
       console.log(error)
       response.status(500).render('error500.hbs')
     } else {
-      db.getBlogPostWithinLimit(postsPerPage, endIndex, function (error, blogposts) {
+      db.getBlogPostWithinLimit(postsPerPage, offset, function (error, blogposts) {
         previousPage = parseInt(currentPageNumber) - 1
         nextPage = parseInt(currentPageNumber) + 1
         let disabledNext = false
@@ -233,7 +236,8 @@ router.get('/:id', function (request, response) {
             previousPage = startPage
             disabledNext = true
           }
-          if (postsPerPage * currentPageNumber >= totalAmountOfPosts) {
+          //uses plus one to check if there is any posts on the next page
+          if ((postsPerPage+1) * currentPageNumber >= totalAmountOfPosts) {
             nextPage = currentPageNumber
             disabledPrevious = true
           }
@@ -245,8 +249,6 @@ router.get('/:id', function (request, response) {
             disabled: "disabled",
             blogpost: blogposts
           }
-          console.log(model.blogpost);
-          
           response.render('blog.hbs', model)
         }
       })

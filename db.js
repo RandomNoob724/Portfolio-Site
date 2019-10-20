@@ -1,6 +1,36 @@
 const sqlite = require('sqlite3')
 const db = new sqlite.Database("database.db")
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS blogpost (
+        blogpostID	INTEGER PRIMARY KEY,
+        blogpostHeader	TEXT,
+        blogpostText	TEXT,
+        blogpostDate	DATE,
+        timestampPosted	INTEGER
+    )
+`)
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS comment (
+        commentID	INTEGER PRIMARY KEY,
+        blogpostID	INTEGER,
+        commentPublisher TEXT,
+        commentText	TEXT,
+        FOREIGN KEY (blogpostID) REFERENCES blogpost(blogpostID)
+    )
+`)
+
+db.run(`
+    CREATE TABLE IF NOT EXISTS projects (
+        name	TEXT,
+        description	TEXT,
+        link	TEXT,
+        id	INTEGER PRIMARY KEY AUTOINCREMENT
+    )
+`)
+
+
 exports.getProjects = function (callback) {
     const query = "SELECT * FROM projects"
     db.all(query, function (error, projects) {

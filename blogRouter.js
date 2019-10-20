@@ -7,8 +7,6 @@ const db = require('./db')
 
 const router = express.Router()
 
-const upload = multer({ dest: 'public/uploads/' })
-
 router.use(express.static("public"))
 
 router.get('/', function (request, response) {
@@ -36,7 +34,7 @@ router.get('/create', function (request, response) {
     }
     response.render("home.hbs", model)
   } else {
-    response.render('create-post.hbs', model)
+    response.render('create-post.hbs')
   }
 })
 
@@ -83,9 +81,13 @@ router.post('/post/:id', function (request, response) {
 
   if (commentPublisher.trim() == "") {
     commentPublisher = "Anonymous"
+  } else if (commentPublisher.length > 20){
+    commentError.push("Name is too long")
   }
   if (commentText.trim() == "") {
     commentError.push("You're not allowed to have empty comments")
+  } else if (commentText.length > 200){
+    commentError.push("Comments can't be over 200 characters")
   }
   if (commentError.length > 0) {
     db.getBlogPostById(id, function (error, blogpost) {

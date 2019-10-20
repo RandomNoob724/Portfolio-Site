@@ -1,13 +1,15 @@
 <div class="container-fluid">
     <table class="table table-striped col-md" id="project-table">
-        <thead>
-            <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Edit</th>
-            <th scope="col">Delete</th>
-            </tr>
-        </thead>
-        <tbody>
+        {{#if validationErrors.length}}
+        {{else}}
+            <thead>
+                <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+                </tr>
+            </thead>
+            <tbody>
             {{#if blogposts.length}}
                 {{#each blogposts}}
                     <tr>
@@ -24,6 +26,7 @@
             {{else}}
                 <td>No post found</td>
             {{/if}}
+        {{/if}}
         </tbody>
     </table>
 </div>

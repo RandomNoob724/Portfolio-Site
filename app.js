@@ -148,7 +148,7 @@ app.get('/logout', function (request, response) {
 })
 
 app.get('*', function(request, response){
-  response.status(404).render("404.hbs")
+  response.status(404).render("error404.hbs")
 })
 
 app.listen(8080, () => {

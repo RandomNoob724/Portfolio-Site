@@ -7,13 +7,14 @@ const db = require('./db')
 
 const router = express.Router()
 
+
 router.use(express.static("public"))
 
 router.get('/', function (request, response) {
   const isLoggedIn = request.session.isLoggedIn
   db.getAllBlogPosts(function (error, blogpost) {
     if (error) {
-      response.status(500).render("500.hbs")
+      response.status(500).render("error500.hbs")
     } else {
       const model = {
         isLoggedIn,
@@ -65,7 +66,7 @@ router.post('/create', function (request, response) {
     db.createNewBlogPost(postHeader, postText, postDate, timestamp, function (error) {
       if (error) {
         console.log(error)
-        response.status(500).render("500.hbs")
+        response.status(500).render("error500.hbs")
       } else {
         response.redirect('/blog')
       }
@@ -92,7 +93,7 @@ router.post('/post/:id', function (request, response) {
   if (commentError.length > 0) {
     db.getBlogPostById(id, function (error, blogpost) {
       if (error) {
-        response.status(500).render("500.hbs")
+        response.status(500).render("error500.hbs")
         console.log(error)
       } else {
         db.getAllCommentsOnPost(id, function (error, comments) {
@@ -104,7 +105,7 @@ router.post('/post/:id', function (request, response) {
           }
           if (error) {
             console.log(error)
-            response.status(500).render("500.hbs")
+            response.status(500).render("error500.hbs")
           }
           if (blogpost == null) {
             commentError.push("There are no posts with this id")
@@ -119,7 +120,7 @@ router.post('/post/:id', function (request, response) {
     db.createComment(commentPublisher, commentText, id, function (error) {
       if (error) {
         console.log(error);
-        response.status(500).render("500.hbs")
+        response.status(500).render("error500.hbs")
       }
       response.redirect('/blog/post/' + id)
     })
@@ -141,7 +142,7 @@ router.get('/search', function (request, response) {
     db.getAllBlogPosts(function (error, blogposts) {
       if (error) {
         console.log(error)
-        response.status(500).render("500.hbs")
+        response.status(500).render("error500.hbs")
       } else {
         const model = {
           validationErrors,
@@ -154,7 +155,7 @@ router.get('/search', function (request, response) {
     db.searchBlogPostWithKeyword(keyWord, function (error, blogposts) {
       if (error) {
         console.log(error)
-        response.status(500).render("500.hbs")
+        response.status(500).render("error500.hbs")
       } else {
         const model = {
           blogpost: blogposts
@@ -209,7 +210,7 @@ router.get('/:id', function (request, response) {
         let disabledPrevious = false
         if (error) {
           console.log(error)
-          response.status(500).render("500.hbs")
+          response.status(500).render("error500.hbs")
         } else {
           if (pageNumber == 1) {
             previousPage = 1
@@ -239,7 +240,7 @@ router.get('/post/:id', function (request, response) {
   const validationErrors = []
   db.getBlogPostById(id, function (error, blogpost) {
     if (error) {
-      response.status(500).render("500.hbs")
+      response.status(500).render("error500.hbs")
       console.log(error)
     } else {
       db.getAllCommentsOnPost(id, function (error, comments) {

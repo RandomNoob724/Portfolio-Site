@@ -4,7 +4,7 @@ const db = require('./db')
 const router = express.Router()
 
 router.get('/', function (request, response) {
-    if (request.session.isLoggedIn != response.locals.isLoggedIn) {
+    if (request.session.isLoggedIn == true) {
         response.render('admin.hbs')
     } else {
         console.log("Visitor trying to access the admin site without valid login")
@@ -14,16 +14,12 @@ router.get('/', function (request, response) {
 
 router.get('/manage/blog', function (request, response) {
     const validationErrors = []
-    if (request.session.isLoggedIn != response.locals.isLoggedIn) {
-        validationErrors.push("You have to be logged in to access this part of the website")
-        const model = {
-            validationErrors
-        }
-        response.render("manage-blog.hbs", model)
+    if (request.session.isLoggedIn != true) {
+        response.redirect('/login')
     } else {
         db.getAllBlogPosts(function (error, blogposts) {
             if (error) {
-
+                response.status(500).render("error500.hbs")
             } else {
                 const model = {
                     blogposts
@@ -36,7 +32,7 @@ router.get('/manage/blog', function (request, response) {
 
 router.get('/manage/projects', function (request, response) {
     const validationErrors = []
-    if (request.session.isLoggedIn != response.locals.isLoggedIn) {
+    if (request.session.isLoggedIn != true) {
         validationErrors.push("You have to be logged in to access this part of the website")
         const model = {
             validationErrors

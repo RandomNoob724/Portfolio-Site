@@ -1,6 +1,5 @@
 //node packages
 const express = require('express')
-const multer = require('multer')
 
 //files
 const db = require('./db')
@@ -40,7 +39,7 @@ router.get('/create', function (request, response) {
 })
 
 router.post('/create', function (request, response) {
-  let date = new Date()
+  const date = new Date()
   const postHeader = request.body.blogpostHeader
   const postText = request.body.blogpostText
   const postDate = date.toDateString()
@@ -49,44 +48,49 @@ router.post('/create', function (request, response) {
   const textLimit = 500
 
   const validationErrors = []
-  if (postHeader.trim() == "") {
-    validationErrors.push("Must enter a Header for the post")
-  }
 
-  if(postHeader.trim() > titleLimit){
-    validationErrors.push("To0 many characters in title")
-  }
-
-  if (postText.trim() == "") {
-    validationErrors.push("Mush enter a post body text")
-  }
-
-  if(postText.trim() > textLimit){
-    validationErrors.push("Text limit is reached")
-  }
-
-  if (validationErrors.length > 0) {
-    const model = {
-      validationErrors,
-      postHeader,
-      postText
-    }
-    response.render('create-post.hbs', model)
+  if(request.session.isLoggedIn != true){
+    response.redirect('/authentication-error')
   } else {
-    db.createNewBlogPost(postHeader, postText, postDate, timestamp, function (error) {
-      if (error) {
-        console.log(error)
-        response.status(500).render('error500.hbs')
-      } else {
-        response.redirect('/blog')
+    if (postHeader.trim() == "") {
+      validationErrors.push("Must enter a Header for the post")
+    }
+
+    if(postHeader.trim() > titleLimit){
+      validationErrors.push("Too many characters in title")
+    }
+
+    if (postText.trim() == "") {
+      validationErrors.push("Mush enter a post body text")
+    }
+
+    if(postText.trim() > textLimit){
+      validationErrors.push("Text limit is reached")
+    }
+
+    if (validationErrors.length > 0) {
+      const model = {
+        validationErrors,
+        postHeader,
+        postText
       }
-    })
+      response.render('create-post.hbs', model)
+    } else {
+      db.createNewBlogPost(postHeader, postText, postDate, timestamp, function (error) {
+        if (error) {
+          console.log(error)
+          response.status(500).render('error500.hbs')
+        } else {
+          response.redirect('/blog')
+        }
+      })
+    }
   }
 })
 
 router.post('/post/:id', function (request, response) {
   const id = request.params.id
-  let commentPublisher = request.body.commenterName
+  const commentPublisher = request.body.commenterName
   const commentText = request.body.commentMainText
   const maxCommentPublisherLength = 20
   const maxCommentTextLength = 100
@@ -146,9 +150,9 @@ router.post('/post/:id', function (request, response) {
 })
 
 router.get('/search', function (request, response) {
-  let keyWord = request.query.inputedSearch
-  let dateFrom = new Date(request.query.dateFrom)
-  let dateTo = new Date(request.query.dateTo)
+  const keyWord = request.query.inputedSearch
+  const dateFrom = new Date(request.query.dateFrom)
+  const dateTo = new Date(request.query.dateTo)
   dateFrom = dateFrom.getTime()
   dateTo = dateTo.getTime()
 
@@ -212,12 +216,12 @@ router.get('/search', function (request, response) {
 // pagination
 router.get('/:id', function (request, response) {
   const currentPageNumber = request.params.id
-  let postsPerPage = 3
+  const postsPerPage = 3
   const startPage = 0
 
   db.getAmountOfPosts(function (error, amount) {
-    let totalAmountOfPosts = parseInt(amount.nrOfRows)
-    let offset = postsPerPage * currentPageNumber
+    const totalAmountOfPosts = parseInt(amount.nrOfRows)
+    const offset = postsPerPage * currentPageNumber
 
     if (error) {
       console.log(error)
@@ -257,7 +261,7 @@ router.get('/:id', function (request, response) {
 })
 
 router.get('/post/:id', function (request, response) {
-  var id = request.params.id
+  const id = request.params.id
   const validationErrors = []
   db.getBlogPostById(id, function (error, blogpost) {
     if (error) {
@@ -320,13 +324,17 @@ router.post('/post/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const blogpostHeader = request.body.blogpostHeader
   const blogpostText = request.body.blogpostText
-  db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function (error) {
-    if (error) {
-      response.status(500).render('error500.hbs')
-    } else {
-      response.redirect('/blog/post/' + blogpostID)
-    }
-  })
+  if(request.session.isLoggedIn != true){
+    response.redirect('/authentication-error')
+  } else {
+    db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function (error) {
+      if (error) {
+        response.status(500).render('error500.hbs')
+      } else {
+        response.redirect('/blog/post/' + blogpostID)
+      }
+    })
+  }
 })
 
 //This sends a request to the server to delete a blogpost with the specific id that is loaded in to the url

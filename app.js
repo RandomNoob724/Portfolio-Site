@@ -131,6 +131,10 @@ app.post('/logout', function (request, response) {
   response.redirect('/')
 })
 
+app.get('/authentication-error', function(request, response){
+  response.render('authentication-error.hbs')
+})
+
 app.get('*', function(request, response){
   response.status(404).render('error404.hbs')
 })

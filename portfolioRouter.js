@@ -31,20 +31,23 @@ router.post('/create', function(request, response){
     const projectName = request.body.projectName
     const projectDescription = request.body.projectDescription
     const projectLink = request.body.projectLink
-    db.addNewProject(projectName, projectDescription, projectLink, function(error){
-        if(error){
-            response.redirect(500, '/error')
-        } else {
-            response.redirect('/portfolio')
-        }
-    })
+    if (request.session.isLoggedIn == true){
+        db.addNewProject(projectName, projectDescription, projectLink, function(error){
+            if(error){
+                response.redirect(500, '/error')
+            } else {
+                response.redirect('/portfolio')
+            }
+        })
+    }
 })
 
 router.post('/:id/delete', function(request, response){
     const id = request.params.id
     db.deleteProjectWithId(id, function(error){
         if(error){
-            //Do something
+            response.status(500).render('error500.hbs')
+            console.log(error)
         } else {
             response.redirect('/admin/manage/projects')
         }
@@ -55,6 +58,7 @@ router.get('/:id/edit', function(request, response){
     const id = request.params.id
     db.getProjectWithId(id, function(error, project){
         if(error){
+            response.status(500).render('erro500.hbs')
             console.log(error)
         } else {
             const model = {
@@ -70,13 +74,16 @@ router.post('/:id/edit', function(request, response){
     const title = request.body.projectName
     const description = request.body.projectDescription
     const link = request.body.projectLink
-    db.updateProjectWithId(title, description, link, id, function(error){
-        if(error){
-            console.log(error)
-        } else {
-            response.redirect('/admin/manage/projects')
-        }
-    })
+    if(request.session.isLoggedIn == true){
+        db.updateProjectWithId(title, description, link, id, function(error){
+            if(error){
+                response.status(500).render('error500.hbs')
+                console.log(error)
+            } else {
+                response.redirect('/admin/manage/projects')
+            }
+        })
+    }
 })
 
 module.exports = router

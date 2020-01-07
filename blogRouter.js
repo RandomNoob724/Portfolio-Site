@@ -90,7 +90,7 @@ router.post('/create', function (request, response) {
 
 router.post('/post/:id', function (request, response) {
   const id = request.params.id
-  const commentPublisher = request.body.commenterName
+  let commentPublisher = request.body.commenterName
   const commentText = request.body.commentMainText
   const maxCommentPublisherLength = 20
   const maxCommentTextLength = 100
@@ -98,6 +98,9 @@ router.post('/post/:id', function (request, response) {
 
   if (commentPublisher.trim() == "") {
     commentPublisher = "Anonymous"
+  } 
+  if (request.session.isLoggedIn == true){
+    commentPublisher = "Admin"
   }
 
   if (commentPublisher.length > maxCommentPublisherLength) {

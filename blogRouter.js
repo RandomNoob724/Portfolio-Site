@@ -6,9 +6,6 @@ const db = require('./db')
 
 const router = express.Router()
 
-
-router.use(express.static("public"))
-
 router.get('/', function (request, response) {
   const isLoggedIn = request.session.isLoggedIn
   db.getAllBlogPosts(function (error, blogpost) {
@@ -86,6 +83,10 @@ router.post('/create', function (request, response) {
       })
     }
   }
+})
+
+router.get('/post', function(request, response){
+  response.redirect('/blog')
 })
 
 router.post('/post/:id', function (request, response) {

@@ -1,6 +1,5 @@
 <main>
-    <br>
-    <div class="jumbotron container">
+    <div class="jumbotron container" id="create-post-form">
         <form class="form-createpost form" method="POST" action="/comment/{{comment.commentID}}/edit">
             <h1 class="text-center">Edit comment</h1>
             <div class="text-center mb-4">
@@ -13,23 +12,14 @@
                     </ul>
                 {{/if}}
             </div>
-            <br>
             <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div class="form-label-group">
-                <input name="commentPublisher" type="text" class="form-control" placeholder="Comment Publisher" value="{{comment.commentPublisher}}">
+                <input name="commentPublisher" type="text" class="form-control" placeholder="Comment Publisher" value="{{comment.commentPublisher}}" id="create-post-input-field">
             </div>
-            <br>
             <div class="form-label-group">
-                <textarea name="commentText" class="form-control" rows="10" placeholder="Comment content">{{comment.commentText}}</textarea>
+                <textarea name="commentText" class="form-control" id="create-post-input-field" rows="10" placeholder="Comment content">{{comment.commentText}}</textarea>
             </div>
-            <br>
-            <div class="form-label-group">
-                {{!-- Use multer for handeling images --}}
-                {{!-- <input name="blogpostImage" type="file" id="blogpostImage" accept="image/*"> --}}
-                <input type="hidden" name="blogpostID" value="{{comment.blogpostID}}">
-            </div>
-            <br>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Post</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="create-post-submitbutton">Post</button>
         </form>
     </div>
 </main>

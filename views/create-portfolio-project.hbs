@@ -1,6 +1,5 @@
 <main>
-    <br>
-    <div class="jumbotron container">
+    <div class="jumbotron container" id="create-post-form">
         <form class="form-createpost form" method="POST" action="/portfolio/create">
             <h1 class="text-center">Add new portfolio Project</h1>
             <div class="text-center mb-4">
@@ -14,21 +13,17 @@
                     </ul>
                 {{/if}}
             </div>
-            <br>
             <input type="hidden" name="_csrf" value="{{csrfToken}}">
             <div class="form-label-group">
-                <input name="projectName" type="text" class="form-control" placeholder="Project Name" value="{{projectName}}">
+                <input name="projectName" type="text" class="form-control" placeholder="Project Name" value="{{projectName}}" id="create-post-input-field">
             </div>
-            <br>
             <div class="form-label-group">
-                <textarea name="projectDescription" class="form-control" placeholder="Short description about the project" rows="5">{{projectDescription}}</textarea>
+                <textarea name="projectDescription" class="form-control" placeholder="Short description about the project" rows="5" id="create-post-input-field">{{projectDescription}}</textarea>
             </div>
-            <br>
             <div class="form-label-group">
-                <input name="projectLink" class="form-control" placeholder="Link to project" type="text">
+                <input name="projectLink" class="form-control" placeholder="Link to project" type="text" id="create-post-input-field">
             </div>
-            <br>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Post</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="create-post-submitbutton">Post</button>
         </form>
     </div>
 </main>

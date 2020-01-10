@@ -1,22 +1,18 @@
 <main>
-    <br>
-    <div class="jumbotron container">
+    <div class="jumbotron container" id="create-post-form">
         <form class="form-createpost form" method="POST" action="/blog/create">
             <h1 class="text-center">Create blog-post</h1>
             <div class="text-center mb-4">
                 <h1 class="h3 mb-3 font-weight-normal">Write new post</h1>
             </div>
-            <br>
-            <input type="hidden" name="_csrf" value="{{csrfToken}}">
+            <input type="hidden" name="_csrf" value="{{csrfToken}}" id="create-post-input-field">
             <div class="form-label-group">
-                <input name="blogpostHeader" type="text" id="blogpostHeader" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}" maxlength="50">
+                <input name="blogpostHeader" type="text" id="blogpostHeader create-post-input-field" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}" maxlength="50">
             </div>
-            <br>
             <div class="form-label-group">
-                <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20" maxlength="500">{{postText}}</textarea>
+                <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20" maxlength="500" id="create-post-input-field">{{postText}}</textarea>
             </div>
-            <br>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Post</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="create-post-submitbutton">Post</button>
         </form>
     </div>
 </main>

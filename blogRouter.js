@@ -99,9 +99,9 @@ router.post('/post/:id', function (request, response) {
 
   if (commentPublisher.trim() == "") {
     commentPublisher = "Anonymous"
-  } 
-  if (request.session.isLoggedIn == true){
-    commentPublisher = "Admin"
+    if (request.session.isLoggedIn == true){
+      commentPublisher = "Admin"
+    }
   }
 
   if (commentPublisher.length > maxCommentPublisherLength) {

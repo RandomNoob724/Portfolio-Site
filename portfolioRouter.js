@@ -24,14 +24,18 @@ router.get('/', function(request, response){
 })
 
 router.get('/create', function(request, response){
-    response.render("create-portfolio-project.hbs")
+    if(request.session.isLoggedIn){
+        response.render("create-portfolio-project.hbs")
+    } else {
+        response.redirect('/authentication-error')
+    }
 })
 
 router.post('/create', function(request, response){
     const projectName = request.body.projectName
     const projectDescription = request.body.projectDescription
     const projectLink = request.body.projectLink
-    if (request.session.isLoggedIn == true){
+    if (request.session.isLoggedIn){
         db.addNewProject(projectName, projectDescription, projectLink, function(error){
             if(error){
                 response.redirect(500, '/error')
@@ -39,34 +43,44 @@ router.post('/create', function(request, response){
                 response.redirect('/portfolio')
             }
         })
+    } else {
+        response.redirect('/authentication-error')
     }
 })
 
 router.post('/:id/delete', function(request, response){
     const id = request.params.id
-    db.deleteProjectWithId(id, function(error){
-        if(error){
-            response.status(500).render('error500.hbs')
-            console.log(error)
-        } else {
-            response.redirect('/admin/manage/projects')
-        }
-    })
+    if(request.session.isLoggedIn){
+        db.deleteProjectWithId(id, function(error){
+            if(error){
+                response.status(500).render('error500.hbs')
+                console.log(error)
+            } else {
+                response.redirect('/admin/manage/projects')
+            }
+        })
+    } else {
+        response.redirect('/authentication-error')
+    }
 })
 
 router.get('/:id/edit', function(request, response){
     const id = request.params.id
-    db.getProjectWithId(id, function(error, project){
-        if(error){
-            response.status(500).render('erro500.hbs')
-            console.log(error)
-        } else {
-            const model = {
-                project
+    if(request.session.isLoggedIn){
+        db.getProjectWithId(id, function(error, project){
+            if(error){
+                response.status(500).render('erro500.hbs')
+                console.log(error)
+            } else {
+                const model = {
+                    project
+                }
+                response.render('edit-project.hbs', model)
             }
-            response.render('edit-project.hbs', model)
-        }
-    })
+        })
+    } else {
+        response.redirect('/authentication-error')
+    }
 })
 
 router.post('/:id/edit', function(request, response){
@@ -74,7 +88,7 @@ router.post('/:id/edit', function(request, response){
     const title = request.body.projectName
     const description = request.body.projectDescription
     const link = request.body.projectLink
-    if(request.session.isLoggedIn == true){
+    if(request.session.isLoggedIn){
         db.updateProjectWithId(title, description, link, id, function(error){
             if(error){
                 response.status(500).render('error500.hbs')
@@ -83,6 +97,8 @@ router.post('/:id/edit', function(request, response){
                 response.redirect('/admin/manage/projects')
             }
         })
+    } else {
+        response.redirect('/authentication-error')
     }
 })
 

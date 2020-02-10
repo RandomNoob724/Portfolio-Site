@@ -6,6 +6,7 @@ const db = require('./db')
 
 const router = express.Router()
 
+//All users should have access to viewing the blogposts
 router.get('/', function (request, response) {
   const isLoggedIn = request.session.isLoggedIn
   db.getAllBlogPosts(function (error, blogpost) {
@@ -22,19 +23,17 @@ router.get('/', function (request, response) {
   })
 })
 
+//Only the admin should get the create form
 router.get('/create', function (request, response) {
   const validationErrors = []
   if (request.session.isLoggedIn != true) {
-    validationErrors.push("You have to be logged in to use this resource")
-    const model = {
-      validationErrors
-    }
-    response.render('home.hbs', model)
+    response.redirect('/authentication-error')
   } else {
     response.render('create-post.hbs')
   }
 })
 
+//Only loggedin admins should be able to post
 router.post('/create', function (request, response) {
   const date = new Date()
   const postHeader = request.body.blogpostHeader
@@ -89,6 +88,7 @@ router.get('/post', function(request, response){
   response.redirect('/blog')
 })
 
+//Here everyone should be able to post because we handle the comments
 router.post('/post/:id', function (request, response) {
   const id = request.params.id
   let commentPublisher = request.body.commenterName
@@ -153,6 +153,8 @@ router.post('/post/:id', function (request, response) {
   }
 })
 
+
+//Here the user can search for different things, should be accessible by everyone
 router.get('/search', function (request, response) {
   const keyWord = request.query.inputedSearch
   const dateFrom = new Date(request.query.dateFrom)
@@ -217,7 +219,7 @@ router.get('/search', function (request, response) {
   }
 })
 
-// pagination
+// pagination gets 3 posts per page
 router.get('/:id', function (request, response) {
   const currentPageNumber = request.params.id
   const postsPerPage = 3
@@ -264,6 +266,7 @@ router.get('/:id', function (request, response) {
   })
 })
 
+//When a user clicks view more on a specific post this get request is called
 router.get('/post/:id', function (request, response) {
   const id = request.params.id
   const validationErrors = []
@@ -296,32 +299,36 @@ router.get('/post/:id', function (request, response) {
 router.get('/post/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const validationErrors = []
-  db.getBlogPostById(blogpostID, function (error, blogpost) {
-    if (error) {
-      console.log("Something went wrong when getting blogpost from the database")
-      response.status(500).render("error500.hbs")
-    } else if (request.session.isLoggedIn != true) {
-      validationErrors.push("You have to log in to access this part of the website")
-      const model = {
-        notLoggedIn: true,
-        validationErrors
-      }
-      response.render('blog.hbs', model)
-    } else {
-      db.getAllCommentsOnPost(blogpostID, function (error, comments) {
-        if (error) {
-          response.status(500).render('error500.hbs')
-        } else {
-          const model = {
-            validationErrors,
-            comments,
-            blogpost
-          }
-          response.render('edit-blogpost.hbs', model)
+  if(request.session.isLoggedIn){
+    db.getBlogPostById(blogpostID, function (error, blogpost) {
+      if (error) {
+        console.log("Something went wrong when getting blogpost from the database")
+        response.status(500).render("error500.hbs")
+      } else if (request.session.isLoggedIn != true) {
+        validationErrors.push("You have to log in to access this part of the website")
+        const model = {
+          notLoggedIn: true,
+          validationErrors
         }
-      })
-    }
-  })
+        response.render('blog.hbs', model)
+      } else {
+        db.getAllCommentsOnPost(blogpostID, function (error, comments) {
+          if (error) {
+            response.status(500).render('error500.hbs')
+          } else {
+            const model = {
+              validationErrors,
+              comments,
+              blogpost
+            }
+            response.render('edit-blogpost.hbs', model)
+          }
+        })
+      }
+    })
+  } else {
+    response.redirect('/authentication-error')
+  }
 })
 
 router.post('/post/:id/edit', function (request, response) {
@@ -344,26 +351,29 @@ router.post('/post/:id/edit', function (request, response) {
 //This sends a request to the server to delete a blogpost with the specific id that is loaded in to the url
 router.post('/post/:id/delete-post', function (request, response) {
   const blogpostID = request.params.id
-
-  db.deleteAllCommentWithId(blogpostID, function (error) {
-    if (error) {
-      const model = {
-        couldNotDeletePost: true
-      }
-      response.render('blog.hbs', model)
-    } else {
-      db.deleteBlogPost(blogpostID, function (error) {
-        if (error) {
-          const model = {
-            couldNotDeletePost: true
-          }
-          response.render('blog.hbs', model)
-        } else {
-          response.redirect('/admin/manage/blog')
+  if(request.session.isLoggedIn){
+    db.deleteAllCommentWithId(blogpostID, function (error) {
+      if (error) {
+        const model = {
+          couldNotDeletePost: true
         }
-      })
-    }
-  })
+        response.render('blog.hbs', model)
+      } else {
+        db.deleteBlogPost(blogpostID, function (error) {
+          if (error) {
+            const model = {
+              couldNotDeletePost: true
+            }
+            response.render('blog.hbs', model)
+          } else {
+            response.redirect('/admin/manage/blog')
+          }
+        })
+      }
+    })
+  } else {
+    response.redirect('/authentication-error')
+  }
 })
 
 module.exports = router

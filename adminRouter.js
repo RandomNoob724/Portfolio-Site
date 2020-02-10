@@ -14,7 +14,7 @@ router.get('/', function (request, response) {
 
 router.get('/manage/blog', function (request, response) {
     if (request.session.isLoggedIn != true) {
-        response.redirect('/login')
+        response.redirect('/authentication-error')
     } else {
         db.getAllBlogPosts(function (error, blogposts) {
             if (error) {
@@ -32,7 +32,7 @@ router.get('/manage/blog', function (request, response) {
 
 router.get('/manage/projects', function (request, response) {
     if (request.session.isLoggedIn != true) {
-        response.redirect('/login')
+        response.redirect('/authentication-error')
     } else {
         db.getProjects(function (error, projects) {
             if (error) {

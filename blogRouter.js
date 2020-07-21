@@ -156,9 +156,10 @@ router.post('/post/:id', function (request, response) {
 
 //Here the user can search for different things, should be accessible by everyone
 router.get('/search', function (request, response) {
-  const keyWord = request.query.inputedSearch
-  const dateFrom = new Date(request.query.dateFrom)
-  const dateTo = new Date(request.query.dateTo)
+  //these need to be let because some of them need to be changed from the initial value later on
+  let keyWord = request.query.inputedSearch
+  let dateFrom = new Date(request.query.dateFrom)
+  let dateTo = new Date(request.query.dateTo)
   dateFrom = dateFrom.getTime()
   dateTo = dateTo.getTime()
 

@@ -39,6 +39,7 @@
             {{/if}}
         </div>
     </div>
+    {{#if pagination}}
     <ul class="pagination justify-content-center mb-4">
         {{#if disabledNext}}
             <li class="page-item {{disabled}}">
@@ -55,4 +56,5 @@
             <a class="page-link {{disabled}}" href="/blog/{{nextPage}}">Older →</a>
         </li>
     </ul>
+    {{/if}}
 </div>

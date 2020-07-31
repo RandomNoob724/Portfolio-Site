@@ -77,7 +77,7 @@ router.post('/create', function (request, response) {
           console.log(error)
           response.status(500).render('error500.hbs')
         } else {
-          response.redirect('/blog')
+          response.redirect('/blog/0')
         }
       })
     }
@@ -247,7 +247,7 @@ router.get('/:id', function (request, response) {
             disabledNext = true
           }
           //uses plus one to check if there is any posts on the next page
-          if ((postsPerPage+1) * currentPageNumber >= totalAmountOfPosts) {
+          if ((postsPerPage+2) * currentPageNumber >= totalAmountOfPosts) {
             nextPage = currentPageNumber
             disabledPrevious = true
           }
@@ -257,7 +257,8 @@ router.get('/:id', function (request, response) {
             disabledNext,
             disabledPrevious,
             disabled: "disabled",
-            blogpost: blogposts
+            blogpost: blogposts,
+            pagination: true
           }
           response.render('blog.hbs', model)
         }

@@ -39,20 +39,23 @@
             {{/if}}
         </div>
     </div>
-    <ul class="pagination justify-content-center mb-4">
-        {{#if disabledNext}}
-            <li class="page-item {{disabled}}">
-        {{else}}
-            <li class="page-item">
-        {{/if}}
-            <a class="page-link" href="/blog/{{previousPage}}">← Newer</a>
-        </li>
-        {{#if disabledPrevious}}
-            <li class="page-item {{disabled}}">
-        {{else}}
-            <li class="page-item">
-        {{/if}}
-            <a class="page-link {{disabled}}" href="/blog/{{nextPage}}">Older →</a>
-        </li>
-    </ul>
+    {{#if search}}
+    {{else}}
+        <ul class="pagination justify-content-center mb-4">
+            {{#if disabledNext}}
+                <li class="page-item {{disabled}}">
+            {{else}}
+                <li class="page-item">
+            {{/if}}
+                <a class="page-link" href="/blog/{{previousPage}}">← Newer</a>
+            </li>
+            {{#if disabledPrevious}}
+                <li class="page-item {{disabled}}">
+            {{else}}
+                <li class="page-item">
+            {{/if}}
+                <a class="page-link {{disabled}}" href="/blog/{{nextPage}}">Older →</a>
+            </li>
+        </ul>
+    {{/if}}
 </div>

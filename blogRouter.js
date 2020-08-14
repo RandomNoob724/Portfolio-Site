@@ -3,6 +3,7 @@ const express = require('express')
 
 //files
 const db = require('./db')
+const { search } = require('./portfolioRouter')
 
 const router = express.Router()
 
@@ -77,7 +78,7 @@ router.post('/create', function (request, response) {
           console.log(error)
           response.status(500).render('error500.hbs')
         } else {
-          response.redirect('/blog')
+          response.redirect('/blog/0')
         }
       })
     }
@@ -157,8 +158,8 @@ router.post('/post/:id', function (request, response) {
 //Here the user can search for different things, should be accessible by everyone
 router.get('/search', function (request, response) {
   const keyWord = request.query.inputedSearch
-  const dateFrom = new Date(request.query.dateFrom)
-  const dateTo = new Date(request.query.dateTo)
+  let dateFrom = new Date(request.query.dateFrom)
+  let dateTo = new Date(request.query.dateTo)
   dateFrom = dateFrom.getTime()
   dateTo = dateTo.getTime()
 
@@ -175,7 +176,8 @@ router.get('/search', function (request, response) {
         const model = {
           validationErrors,
           keyWord,
-          blogpost: blogposts
+          blogpost: blogposts,
+          search: true
         }
         response.render('blog.hbs', model)
       }
@@ -188,7 +190,8 @@ router.get('/search', function (request, response) {
       } else {
         const model = {
           blogpost: blogposts,
-          keyWord
+          keyWord,
+          search: true
         }
         response.render('blog.hbs', model)
       }
@@ -200,7 +203,8 @@ router.get('/search', function (request, response) {
       } else {
         const model = {
           blogpost: blogposts,
-          keyWord
+          keyWord,
+          search: true
         }
         response.render('blog.hbs', model)
       }
@@ -211,7 +215,8 @@ router.get('/search', function (request, response) {
         console.log(error)
       } else {
         const model = {
-          blogpost: blogposts
+          blogpost: blogposts,
+          search: true
         }
         response.render('blog.hbs', model)
       }
@@ -221,7 +226,7 @@ router.get('/search', function (request, response) {
 
 // pagination gets 3 posts per page
 router.get('/:id', function (request, response) {
-  const currentPageNumber = request.params.id
+  const currentPageNumber = parseInt(request.params.id)
   const postsPerPage = 3
   const startPage = 0
 
@@ -247,7 +252,7 @@ router.get('/:id', function (request, response) {
             disabledNext = true
           }
           //uses plus one to check if there is any posts on the next page
-          if ((postsPerPage+1) * currentPageNumber >= totalAmountOfPosts) {
+          if (postsPerPage * (currentPageNumber + 1) >= totalAmountOfPosts) {
             nextPage = currentPageNumber
             disabledPrevious = true
           }

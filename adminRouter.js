@@ -4,7 +4,7 @@ const db = require('./db')
 const router = express.Router()
 
 router.get('/', function (request, response) {
-    if (request.session.isLoggedIn == true) {
+    if (request.session.isLoggedIn) {
         response.render('admin.hbs')
     } else {
         console.log("Visitor trying to access the admin site without valid login")
@@ -18,7 +18,6 @@ router.get('/manage/blog', function (request, response) {
     } else {
         db.getAllBlogPosts(function (error, blogposts) {
             if (error) {
-                console.log(error)
                 response.status(500).render('error500.hbs')
             } else {
                 const model = {
@@ -36,7 +35,6 @@ router.get('/manage/projects', function (request, response) {
     } else {
         db.getProjects(function (error, projects) {
             if (error) {
-                console.log(error)
                 response.render(500).render('error500.hbs')
             } else {
                 const model = {

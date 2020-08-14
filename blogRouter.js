@@ -75,7 +75,6 @@ router.post('/create', function (request, response) {
     } else {
       db.createNewBlogPost(postHeader, postText, postDate, timestamp, function (error) {
         if (error) {
-          console.log(error)
           response.status(500).render('error500.hbs')
         } else {
           response.redirect('/blog/0')
@@ -157,7 +156,7 @@ router.post('/post/:id', function (request, response) {
 
 //Here the user can search for different things, should be accessible by everyone
 router.get('/search', function (request, response) {
-  const keyWord = request.query.inputedSearch
+  let keyWord = request.query.inputedSearch
   let dateFrom = new Date(request.query.dateFrom)
   let dateTo = new Date(request.query.dateTo)
   dateFrom = dateFrom.getTime()
@@ -177,7 +176,7 @@ router.get('/search', function (request, response) {
           validationErrors,
           keyWord,
           blogpost: blogposts,
-          search: true
+          pagination: false
         }
         response.render('blog.hbs', model)
       }
@@ -191,7 +190,7 @@ router.get('/search', function (request, response) {
         const model = {
           blogpost: blogposts,
           keyWord,
-          search: true
+          pagination: false
         }
         response.render('blog.hbs', model)
       }
@@ -200,11 +199,12 @@ router.get('/search', function (request, response) {
     db.searchBlogPostWithDate(dateFrom, dateTo, function (error, blogposts) {
       if (error) {
         console.log(error)
+        response.status(500).render('error500.hbs')
       } else {
         const model = {
           blogpost: blogposts,
           keyWord,
-          search: true
+          pagination: false
         }
         response.render('blog.hbs', model)
       }
@@ -213,10 +213,11 @@ router.get('/search', function (request, response) {
     db.searchBlogPost(keyWord, dateFrom, dateTo, function (error, blogposts) {
       if (error) {
         console.log(error)
+        response.status(500).render('error500.hbs')
       } else {
         const model = {
           blogpost: blogposts,
-          search: true
+          pagination: false
         }
         response.render('blog.hbs', model)
       }
@@ -262,7 +263,8 @@ router.get('/:id', function (request, response) {
             disabledNext,
             disabledPrevious,
             disabled: "disabled",
-            blogpost: blogposts
+            blogpost: blogposts,
+            pagination: true
           }
           response.render('blog.hbs', model)
         }
@@ -278,7 +280,6 @@ router.get('/post/:id', function (request, response) {
   db.getBlogPostById(id, function (error, blogpost) {
     if (error) {
       response.status(500).render('error500.hbs')
-      console.log(error)
     } else {
       db.getAllCommentsOnPost(id, function (error, comments) {
         const model = {
@@ -287,8 +288,7 @@ router.get('/post/:id', function (request, response) {
           comments
         }
         if (error) {
-          console.log(error)
-          response.redirect('/error500')
+          response.status(500).render('error500.hbs')
         }
         if (blogpost == null) {
           validationErrors.push("There are no posts with this id")
@@ -307,7 +307,6 @@ router.get('/post/:id/edit', function (request, response) {
   if(request.session.isLoggedIn){
     db.getBlogPostById(blogpostID, function (error, blogpost) {
       if (error) {
-        console.log("Something went wrong when getting blogpost from the database")
         response.status(500).render("error500.hbs")
       } else if (request.session.isLoggedIn != true) {
         validationErrors.push("You have to log in to access this part of the website")
@@ -362,14 +361,14 @@ router.post('/post/:id/delete-post', function (request, response) {
         const model = {
           couldNotDeletePost: true
         }
-        response.render('blog.hbs', model)
+        response.status(500).render('error500.hbs')
       } else {
         db.deleteBlogPost(blogpostID, function (error) {
           if (error) {
             const model = {
               couldNotDeletePost: true
             }
-            response.render('blog.hbs', model)
+            response.status(500).render('error500.hbs')
           } else {
             response.redirect('/admin/manage/blog')
           }

@@ -17,7 +17,6 @@ router.post('/:commentID/delete', function (request, response) {
     } else {
         response.redirect('/authentication-error')
     }
-    
 })
 
 router.get('/:commentID/edit', function (request, response) {
@@ -47,7 +46,6 @@ router.post('/:commentID/edit', function (request, response) {
         db.updateCommentWithId(updatedCommentPublisher, updatedCommentText, commentID, function (error) {
             if (error) {
                 response.status(500).render("500.hbs")
-                console.log(error)
             } else {
                 response.redirect('/blog/post/' + blogpostID)
             }

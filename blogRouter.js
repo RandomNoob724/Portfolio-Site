@@ -1,11 +1,42 @@
 //node packages
 const express = require('express')
+const multer = require('multer')
 
 //files
 const db = require('./db')
 const { search } = require('./portfolioRouter')
 
+//other
+const path = require('path')
+const fileSystem = require('fs')
+
+const storage = multer.diskStorage({
+  destination: function(request, file, callback) {
+    callback(null, __dirname+'/upload');
+  },
+  filename: function (request, file, callback) {
+    let extension = null
+    if(file.mimetype == 'image/jpeg'){
+      extension = ".jpg"
+    }
+    callback(null, file.originalname)
+  }
+})
+
+const fileFilter = function (request, file, callback) {
+  if(file.mimetype == 'image/jpeg') {
+    callback(null, true)
+  } else {
+    callback(null, false)
+  }
+}
+
+const upload = multer({dest: __dirname+"/upload/", storage: storage, fileFilter: fileFilter})
+
 const router = express.Router()
+
+//Set the public folder for the uploaded files
+router.use(express.static(path.join(__dirname + '/upload')))
 
 //All users should have access to viewing the blogposts
 router.get('/', function (request, response) {
@@ -34,8 +65,22 @@ router.get('/create', function (request, response) {
   }
 })
 
+router.post('/upload', upload.single('myFile'), function(request, response){
+  const file = request.file
+  if(request.file) {
+      console.log("File uploaded")
+      response.send("File uploaded successfully")
+    } else {
+      response.send("File was wrong format")
+    }
+})
+
 //Only loggedin admins should be able to post
-router.post('/create', function (request, response) {
+router.post('/create', upload.single('myFile'), function (request, response) {
+  let imageLink = ""
+  if(request.file) {
+    imageLink = request.file.originalname
+  }
   const date = new Date()
   const postHeader = request.body.blogpostHeader
   const postText = request.body.blogpostText
@@ -73,8 +118,9 @@ router.post('/create', function (request, response) {
       }
       response.render('create-post.hbs', model)
     } else {
-      db.createNewBlogPost(postHeader, postText, postDate, timestamp, function (error) {
+      db.createNewBlogPost(postHeader, postText, postDate, imageLink, timestamp, function (error) {
         if (error) {
+          console.log(error);
           response.status(500).render('error500.hbs')
         } else {
           response.redirect('/blog/0')
@@ -82,10 +128,6 @@ router.post('/create', function (request, response) {
       })
     }
   }
-})
-
-router.get('/post', function(request, response){
-  response.redirect('/blog')
 })
 
 //Here everyone should be able to post because we handle the comments

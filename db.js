@@ -7,6 +7,7 @@ db.run(`
         blogpostHeader	TEXT,
         blogpostText	TEXT,
         blogpostDate	DATE,
+        imageLink       TEXT,
         timestampPosted	INTEGER
     )
 `)
@@ -107,9 +108,9 @@ exports.getBlogPostWithinLimit = function(limit, offset, callback){
     })
 }
 
-exports.createNewBlogPost = function (postHeader, postText, postDate, timestampPosted, callback) {
-    const query = "INSERT INTO blogpost (blogpostHeader, blogpostText, blogpostDate, timestampPosted) VALUES (?, ?, ?, ?)"
-    const values = [postHeader, postText, postDate, timestampPosted]
+exports.createNewBlogPost = function (postHeader, postText, postDate, imageLink, timestampPosted, callback) {
+    const query = "INSERT INTO blogpost (blogpostHeader, blogpostText, blogpostDate, imageLink, timestampPosted) VALUES (?, ?, ?, ?, ?)"
+    const values = [postHeader, postText, postDate, imageLink, timestampPosted]
 
     db.run(query, values, function (error) {
         const id = this.lastID

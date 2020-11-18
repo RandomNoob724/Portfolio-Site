@@ -1,6 +1,6 @@
 <main>
     <div class="jumbotron container" id="create-post-form">
-        <form class="form-createpost form" method="POST" action="/blog/create">
+        <form class="form-createpost form" method="POST" action="/blog/create?_csrf={{csrfToken}}" enctype="multipart/form-data">
             <h1 class="text-center">Create blog-post</h1>
             <div class="text-center mb-4">
                 <h1 class="h3 mb-3 font-weight-normal">Write new post</h1>
@@ -10,8 +10,9 @@
                 <input name="blogpostHeader" type="text" id="blogpostHeader create-post-input-field" class="form-control" placeholder="Blogpost Header" value="{{postHeader}}" maxlength="50">
             </div>
             <div class="form-label-group">
-                <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20" maxlength="500" id="create-post-input-field">{{postText}}</textarea>
+                <textarea name="blogpostText" class="form-control" placeholder="Main content" rows="20" id="create-post-input-field">{{postText}}</textarea>
             </div>
+            <input type="file" name="myFile" accept=".jpg">
             <button class="btn btn-lg btn-primary btn-block" type="submit" id="create-post-submitbutton">Post</button>
         </form>
     </div>

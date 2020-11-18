@@ -11,3 +11,12 @@
 #main-header h3 {
     font-size: 3em;
 }
+
+#no-link-style {
+    color: white;
+    text-decoration: none;
+}
+
+.scroll-down-arrow {
+    font-size: 3em;
+}

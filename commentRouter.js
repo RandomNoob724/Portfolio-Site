@@ -40,14 +40,21 @@ router.get('/:commentID/edit', function (request, response) {
 router.post('/:commentID/edit', function (request, response) {
     const updatedCommentPublisher = request.body.commentPublisher
     const updatedCommentText = request.body.commentText
-    const commentID = request.params.commentID
+    const commentID = parseInt(request.params.commentID)
     const blogpostID = request.body.blogpostID
     if(request.session.isLoggedIn){
-        db.updateCommentWithId(updatedCommentPublisher, updatedCommentText, commentID, function (error) {
-            if (error) {
-                response.status(500).render("500.hbs")
+        db.updateCommentWithId(updatedCommentPublisher, updatedCommentText, commentID, function(error){
+            if(error){
+                console.log(error);
+                response.status(500).render('error500.hbs')
             } else {
-                response.redirect('/blog/post/' + blogpostID)
+                db.getCommentWithId(commentID, function(error, comment){
+                    if(error){
+                        response.status(500).render('error500.hbs')
+                    } else {
+                        response.redirect('/blog/post/'+comment.blogpostID)
+                    }
+                })
             }
         })
     }

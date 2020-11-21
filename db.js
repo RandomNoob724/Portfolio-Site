@@ -201,8 +201,8 @@ exports.updateCommentWithId = function(updatedCommentPublisher, updatedCommentTe
     const query = "UPDATE comment SET commentPublisher = ?, commentText = ? WHERE commentID = ?"
     const values = [updatedCommentPublisher, updatedCommentText, commentID]
 
-    db.run(query, values, function(error, comment){
-        callback(error, comment)
+    db.run(query, values, function(error) {
+        callback(error)
     })
 }
 

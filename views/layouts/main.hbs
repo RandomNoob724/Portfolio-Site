@@ -13,8 +13,13 @@
 </head>
 
 <body class="mb-5">
-  <nav class="navbar navbar-expand-lg navbar-expand-sm navbar-dark bg-dark">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <a class="navbar-brand" href="/">RandomNoobCodes</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav">
         <li class="nav-item">
           <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
@@ -32,18 +37,19 @@
           <a class="nav-link" href="/blog/0">Blog</a>
         </li>
         {{#if isLoggedIn}}
-          <li class="nav-item">
-            <a class="nav-link" href="/admin">Admin Panel</a>
-          </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/admin">Admin Panel</a>
+        </li>
         {{/if}}
       </ul>
+    </div>
   </nav>
   {{#if validationErrors.length}}
-    <ul class="list-group text-center">
-      {{#each validationErrors}}
-        <li class="list-group-item text-danger">{{this}}</li>
-      {{/each}}
-    </ul>
+  <ul class="list-group text-center">
+    {{#each validationErrors}}
+    <li class="list-group-item text-danger">{{this}}</li>
+    {{/each}}
+  </ul>
   {{/if}}
   <div class="pb-5">
     {{{body}}}
@@ -52,15 +58,24 @@
     <div class="navbar fixed-bottom bg-dark text-light">
       <p>&copy; Emil Persson 2019</p>
       {{#if isLoggedIn}}
-        <form action="/logout" method="POST">
-          <input type="hidden" name="_csrf" value="{{csrfToken}}">
-          <button class="btn text-light" type="submit">Logout</button>
-        </form>
+      <form action="/logout" method="POST">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}">
+        <button class="btn text-light" type="submit">Logout</button>
+      </form>
       {{else}}
-        <a class="nav-link" href="/login"><button class="btn text-light">Login</button></a>
+      <a class="nav-link" href="/login"><button class="btn text-light">Login</button></a>
       {{/if}}
     </div>
   </footer>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>

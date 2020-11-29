@@ -118,7 +118,7 @@ exports.createNewBlogPost = function (postHeader, postText, postDate, imageLink,
     })
 }
 
-exports.updateBlogPost = function (updatedpostHeader, updatedpostText, postID, callback) {
+exports.updateBlogPost = function (updatedpostHeader, imageLink, updatedpostText, postID, callback) {
     const query = "UPDATE blogpost SET blogpostHeader = ?, blogpostText = ? WHERE blogpostID = ?"
     const values = [updatedpostHeader, updatedpostText, postID]
 

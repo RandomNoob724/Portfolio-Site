@@ -381,14 +381,21 @@ router.post('/post/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const blogpostHeader = request.body.blogpostHeader
   const blogpostText = request.body.blogpostText
+  const imageLink = request.body.blogpostImage
   if(request.session.isLoggedIn != true){
     response.redirect('/authentication-error')
   } else {
-    db.updateBlogPost(blogpostHeader, imageLink, blogpostText, blogpostID, function (error) {
-      if (error) {
-        response.status(500).render('error500.hbs')
+    db.getBlogPostById(blogpostID, function(error, blogpost){
+      if(error){
+        response.redirect(500).render('error500.hbs')
       } else {
-        response.redirect('/blog/post/' + blogpostID)
+        db.updateBlogPost(blogpostHeader, imageLink, blogpostText, blogpostID, function (error) {
+          if (error) {
+            response.status(500).render('error500.hbs')
+          } else {
+            response.redirect('/blog/post/' + blogpostID)
+          }
+        })
       }
     })
   }
@@ -406,7 +413,6 @@ router.post('/post/:id/delete-post', function (request, response) {
         }
         response.status(500).render('error500.hbs')
       } else {
-        fileSystem.unlinkSync(__dirname+ "/upload/"+blogpost.imageLink)
         db.deleteAllCommentWithId(blogpostID, function (error) {
           if (error) {
             const model = {

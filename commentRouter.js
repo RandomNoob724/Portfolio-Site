@@ -41,7 +41,6 @@ router.post('/:commentID/edit', function (request, response) {
     const updatedCommentPublisher = request.body.commentPublisher
     const updatedCommentText = request.body.commentText
     const commentID = parseInt(request.params.commentID)
-    const blogpostID = request.body.blogpostID
     if(request.session.isLoggedIn){
         db.updateCommentWithId(updatedCommentPublisher, updatedCommentText, commentID, function(error){
             if(error){

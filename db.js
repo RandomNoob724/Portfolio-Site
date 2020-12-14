@@ -118,7 +118,7 @@ exports.createNewBlogPost = function (postHeader, postText, postDate, imageLink,
     })
 }
 
-exports.updateBlogPost = function (updatedpostHeader, updatedpostText, postID, callback) {
+exports.updateBlogPost = function (updatedpostHeader, imageLink, updatedpostText, postID, callback) {
     const query = "UPDATE blogpost SET blogpostHeader = ?, blogpostText = ? WHERE blogpostID = ?"
     const values = [updatedpostHeader, updatedpostText, postID]
 
@@ -201,8 +201,8 @@ exports.updateCommentWithId = function(updatedCommentPublisher, updatedCommentTe
     const query = "UPDATE comment SET commentPublisher = ?, commentText = ? WHERE commentID = ?"
     const values = [updatedCommentPublisher, updatedCommentText, commentID]
 
-    db.run(query, values, function(error, comment){
-        callback(error, comment)
+    db.run(query, values, function(error) {
+        callback(error)
     })
 }
 

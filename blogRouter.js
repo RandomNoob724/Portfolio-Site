@@ -381,14 +381,21 @@ router.post('/post/:id/edit', function (request, response) {
   const blogpostID = request.params.id
   const blogpostHeader = request.body.blogpostHeader
   const blogpostText = request.body.blogpostText
+  const imageLink = request.body.blogpostImage
   if(request.session.isLoggedIn != true){
     response.redirect('/authentication-error')
   } else {
-    db.updateBlogPost(blogpostHeader, blogpostText, blogpostID, function (error) {
-      if (error) {
-        response.status(500).render('error500.hbs')
+    db.getBlogPostById(blogpostID, function(error, blogpost){
+      if(error){
+        response.redirect(500).render('error500.hbs')
       } else {
-        response.redirect('/blog/post/' + blogpostID)
+        db.updateBlogPost(blogpostHeader, imageLink, blogpostText, blogpostID, function (error) {
+          if (error) {
+            response.status(500).render('error500.hbs')
+          } else {
+            response.redirect('/blog/post/' + blogpostID)
+          }
+        })
       }
     })
   }
@@ -397,22 +404,32 @@ router.post('/post/:id/edit', function (request, response) {
 //This sends a request to the server to delete a blogpost with the specific id that is loaded in to the url
 router.post('/post/:id/delete-post', function (request, response) {
   const blogpostID = request.params.id
+  
   if(request.session.isLoggedIn){
-    db.deleteAllCommentWithId(blogpostID, function (error) {
-      if (error) {
+    db.getBlogPostById(blogpostID, function(error, blogpost){
+      if(error){
         const model = {
           couldNotDeletePost: true
         }
         response.status(500).render('error500.hbs')
       } else {
-        db.deleteBlogPost(blogpostID, function (error) {
+        db.deleteAllCommentWithId(blogpostID, function (error) {
           if (error) {
             const model = {
               couldNotDeletePost: true
             }
             response.status(500).render('error500.hbs')
-          } else {
-            response.redirect('/admin/manage/blog')
+          } else { 
+            db.deleteBlogPost(blogpostID, function (error) {
+              if (error) {
+                const model = {
+                  couldNotDeletePost: true
+                }
+                response.status(500).render('error500.hbs')
+              } else {
+                response.redirect('/admin/manage/blog')
+              }
+            })
           }
         })
       }

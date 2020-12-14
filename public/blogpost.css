@@ -7,7 +7,7 @@
     text-overflow: ellipsis;
     display: -webkit-box;
     line-height: 1em;    
-    max-height: 4em;     
+    max-height: 8em;     
     -webkit-line-clamp: 5; /* Write the number of 
                               lines you want to be 
                               displayed */
